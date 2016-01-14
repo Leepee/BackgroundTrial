@@ -51,7 +51,7 @@ public class BackgroundService extends Service {
         {
             Notification mucisPlayingNotification = new Notification.Builder(this)
                     .setContentTitle("Music is playing!")
-                    .setContentText("oh my god, don't terll me this worked?!")
+                    .setContentText("oh my god, don't tell me this worked?!")
                     .setLights(Color.MAGENTA, 50, 50)
                     .setSmallIcon(R.mipmap.ic_launcher)
                     .setUsesChronometer(true)
