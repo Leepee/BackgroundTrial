@@ -47,18 +47,51 @@ public class BackgroundService extends Service {
         startForeground(1,notification);
         //        mNM.notify(0,notification);
 
-        if(manager.isMusicActive())
-        {
-            Notification mucisPlayingNotification = new Notification.Builder(this)
-                    .setContentTitle("Music is playing!")
-                    .setContentText("oh my god, don't tell me this worked?!")
-                    .setLights(Color.MAGENTA, 50, 50)
-                    .setSmallIcon(R.mipmap.ic_launcher)
-                    .setUsesChronometer(true)
-                    .build();
-            mNM.notify(1,mucisPlayingNotification);
-        }
+//        AudioManager.OnAudioFocusChangeListener afChangeListener =
+//                new AudioManager.OnAudioFocusChangeListener() {
+//                    @Override
+//                    public void onAudioFocusChange(int i) {
+                        if(manager.isMusicActive())
+                        {
 
+                            Notification musicPlayingNotification = new Notification.Builder(getApplicationContext())
+                                    .setContentTitle("Music is playing!")
+                                    .setContentText("oh my god, don't tell me this worked?!")
+                                    .setLights(Color.MAGENTA, 50, 50)
+                                    .setSmallIcon(R.mipmap.ic_launcher)
+                                    .setUsesChronometer(true)
+                                    .build();
+                            mNM.notify(1,musicPlayingNotification);
+
+                        }else{
+                            Toast.makeText(BackgroundService.this, "This isn't music", Toast.LENGTH_SHORT).show();
+                            Notification notification2 = new Notification.Builder(this)
+                                    .setContentTitle("This is a notification!")
+                                    .setContentText("Background service is totally running, and unkillable.")
+                                    .setLights(Color.MAGENTA, 50, 50)
+                                    .setSmallIcon(R.mipmap.ic_launcher)
+                                    .build();
+                        }
+//                    }
+//                };
+
+
+
+
+//
+//        if(manager.isMusicActive())
+//        {
+//
+//            Notification musicPlayingNotification = new Notification.Builder(this)
+//                    .setContentTitle("Music is playing!")
+//                    .setContentText("oh my god, don't tell me this worked?!")
+//                    .setLights(Color.MAGENTA, 50, 50)
+//                    .setSmallIcon(R.mipmap.ic_launcher)
+//                    .setUsesChronometer(true)
+//                    .build();
+//            mNM.notify(1,musicPlayingNotification);
+//        }
+//
 
     }
 
