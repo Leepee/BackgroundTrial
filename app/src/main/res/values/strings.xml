@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Background Trial</string>
+    <string name="app_name">Music Tracker</string>
     <string name="action_settings">Settings</string>
     <string name="local_service_started">Local Service Started</string>
 </resources>
