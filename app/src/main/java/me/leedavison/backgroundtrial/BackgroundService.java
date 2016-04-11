@@ -50,11 +50,12 @@ public class BackgroundService extends Service {
 
         ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
 
-        final NotificationCompat.Builder musicPlayingNotification = new NotificationCompat.Builder(getApplicationContext())
+        final Notification.Builder musicPlayingNotification = new Notification.Builder(getApplicationContext())
                 .setContentTitle("Thanks for helping my research!")
                 .setContentText("No music is playing")
                 .setSmallIcon(R.mipmap.ic_launcher)
-                .setColor(Color.GRAY)
+                .setOngoing(true)
+                .setPriority(Notification.PRIORITY_MIN)
                 .setUsesChronometer(false);
         mNM.notify(1, musicPlayingNotification.build());
 
