@@ -53,11 +53,22 @@ public class MainActivity extends AppCompatActivity {
 
     public static boolean isService = false;
     String feedbackText = "No feedback!";
+    public boolean firstStart = true;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        if (firstStart){
+
+            Intent myIntent = new Intent(MainActivity.this, welcomeWizard.class);
+            MainActivity.this.startActivity(myIntent);
+
+        }
+
+
+
 
         ImageButton startserviceButton = (ImageButton) findViewById(R.id.Button1);
         startserviceButton.setOnClickListener(new View.OnClickListener() {
