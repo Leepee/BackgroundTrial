@@ -67,9 +67,6 @@ public class MainActivity extends AppCompatActivity {
 
         }
 
-
-
-
         ImageButton startserviceButton = (ImageButton) findViewById(R.id.Button1);
         startserviceButton.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -2,5 +2,19 @@
 <resources>
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorPrimaryDarkAlpha">#84303f9f</color>
     <color name="colorAccent">#ff5252</color>
+
+    <color name="white">#ffffffff</color>
+    <color name="page1">#ff21B8AC</color>
+    <color name="page2">#ff218AB8</color>
+    <color name="page3">#ff21A5B8</color>
+    <color name="page4">#ff1F8B9B</color>
+
+    <color name="rocket">#e55555</color>
+    <color name="avatar1">#e1f4f8</color>
+    <color name="avatar2">#c6b9e7</color>
+    <color name="avatar3">#f8e71d</color>
+    <color name="avatar4">#65aa01</color>
+    <color name="avatar5">#4ee4c1</color>
 </resources>
