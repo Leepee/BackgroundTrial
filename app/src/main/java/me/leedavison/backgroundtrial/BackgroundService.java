@@ -10,9 +10,20 @@ import android.graphics.Color;
 import android.media.AudioManager;
 import android.os.Binder;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationManagerCompat;
+import android.util.Log;
 import android.widget.Toast;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 
 public class BackgroundService extends Service {
@@ -21,6 +32,7 @@ public class BackgroundService extends Service {
     Intent notificationIntent;
     private final IBinder mBinder = new LocalBinder();
     private String newtext;
+    int volumeLevel;
     AudioManager manager;
 
 
@@ -32,36 +44,76 @@ public class BackgroundService extends Service {
 
     @Override
     public void onCreate() {
-        mNM = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
+
+        mNM = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         manager = (AudioManager)this.getSystemService(Context.AUDIO_SERVICE);
+
+        ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
+
+        final Notification.Builder musicPlayingNotification = new Notification.Builder(getApplicationContext())
+                .setContentTitle("Thanks for helping my research!")
+                .setContentText("No music is playing")
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setOngoing(true)
+                .setPriority(Notification.PRIORITY_MIN)
+                .setUsesChronometer(false);
+        mNM.notify(1, musicPlayingNotification.build());
+
+        //Setup the scheduled task
+        scheduler.scheduleAtFixedRate(new Runnable() {
+            @Override
+            public void run() {
+
+
+                if(manager.isMusicActive())
+                {
+                    volumeLevel = manager.getStreamVolume(AudioManager.STREAM_MUSIC);
+
+                    musicPlayingNotification.setContentTitle("Music is playing")
+                            .setContentText("Logging time and volume of music: " + volumeLevel);
+
+                    mNM.notify(1, musicPlayingNotification.build());
+
+                    saveResult(volumeLevel);
+
+                }else{
+
+                    musicPlayingNotification.setContentTitle("No music is playing")
+                            .setContentText("Thanks for helping with my research!")
+                            .setUsesChronometer(false);
+
+                    mNM.notify(1, musicPlayingNotification.build());
+
+                }
+
+            }
+        }, 0, 5, TimeUnit.SECONDS);
+
 
         newtext = "BackGroundApp Service Running";
 
-        Notification notification = new Notification.Builder(this)
-                .setContentTitle("This is a notification!")
-                .setContentText("Background service is totally running, and unkillable.")
-                .setLights(Color.MAGENTA, 50, 50)
-                .setSmallIcon(R.mipmap.ic_launcher)
-                .build();
+    }
 
-        startForeground(1,notification);
-        //        mNM.notify(0,notification);
+    public boolean saveResult(int vol){
 
-        if(manager.isMusicActive())
-        {
-            Notification mucisPlayingNotification = new Notification.Builder(this)
-                    .setContentTitle("Music is playing!")
-                    .setContentText("oh my god, don't tell me this worked?!")
-                    .setLights(Color.MAGENTA, 50, 50)
-                    .setSmallIcon(R.mipmap.ic_launcher)
-                    .setUsesChronometer(true)
-                    .build();
-            mNM.notify(1,mucisPlayingNotification);
+
+        String fileName = "Headphone_Log.csv";
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
+        String time = sdf.format(new Date());
+        String entry = time + " , " + vol +"\n";
+
+        try {
+            FileOutputStream out = openFileOutput(fileName, Context.MODE_APPEND);
+            out.write(entry.getBytes());
+            out.close();
+        }catch (Exception e){
+            e.printStackTrace();
         }
 
 
-    }
 
+        return true;
+    }
     public int onStartCommand(Intent intent, int flags, int startId) {
         return START_STICKY;
     }
@@ -69,17 +121,7 @@ public class BackgroundService extends Service {
         mNM.cancel(R.string.local_service_started);
         stopSelf();
     }
-    private void showNotification() {
-        CharSequence text = getText(R.string.local_service_started);
 
-        Notification notification = new Notification(R.mipmap.ic_launcher, text, System.currentTimeMillis());
-        PendingIntent contentIntent = PendingIntent.getActivity(this, 0,new Intent(this, MainActivity.class), 0);
-//        notification.setLatestEventInfo(this, "BackgroundAppExample",newtext, contentIntent);
-        notification.flags = Notification.FLAG_ONGOING_EVENT | Notification.FLAG_NO_CLEAR;
-        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-
-        mNM.notify(R.string.local_service_started, notification);
-    }
     @Override
     public IBinder onBind(Intent intent) {
         return mBinder;
