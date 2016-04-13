@@ -3,4 +3,18 @@
     <string name="action_settings">Settings</string>
     <string name="local_service_started">Local Service Started</string>
     <string name="title_activity_welcome_wizard">welcomeWizard</string>
+    <string name="example">Example thing</string>
+    <string name="example_error">Error thing</string>
+    <string name="example_details">This is the detail of the question</string>
+    <string name="q_name">Who are you?</string>
+    <string name="q_name_details">Please let me know your name.</string>
+    <string name="q_email">What\'s your Email</string>
+    <string name="q_email_error">Please enter valid email address</string>
+    <string name="q_email_details">This is so I can get back to you if I need to.</string>
+    <string name="q_age">How old are you?</string>
+    <string name="q_age_details">I\'m interested to see if there\'s a relationship between age and amount of music listening.</string>
+    <string name="q_school">Which school?</string>
+    <string name="q_school_details">I\'m interested to know if school makes a difference to your listening habits.</string>
+
+
 </resources>

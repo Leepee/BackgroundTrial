@@ -31,9 +31,9 @@ dependencies {
     compile 'io.github.yavski:fab-speed-dial:1.0.3'
     compile 'com.redbooth:WelcomeCoordinator:1.0.1'
     compile 'com.jakewharton:butterknife:7.0.1'
+    compile 'com.github.HeinrichReimer:material-singleinputform:2.1.0'
 }
 
 repositories {
-    // ...
     maven { url "https://jitpack.io" }
 }

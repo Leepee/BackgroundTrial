@@ -38,6 +38,27 @@
         <item name="android:fontFamily">sans-serif-thin</item>
     </style>
 
+    <style name="YourThemeForSingleInputFormActivity" parent="Theme.AppCompat.Light.NoActionBar">
+
+        <!-- Used for: input field background -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+
+        <!-- Used for: form progress color, status bar color (API 21+) -->
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <!-- Used for: title text color, error text color -->
+        <item name="android:textColorPrimary">@color/white</item>
+
+        <!-- Used for: details text color, step indicator text color -->
+        <item name="android:textColorSecondary">@color/material_black_54</item>
+
+        <!-- Used for: input text color, input widget color -->
+        <item name="android:textColorPrimaryInverse">@color/white</item>
+
+        <!-- Used for: input widget color -->
+        <item name="android:textColorSecondaryInverse">@color/white</item>
+
+    </style>
+
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>

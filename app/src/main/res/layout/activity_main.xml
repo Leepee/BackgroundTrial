@@ -8,6 +8,7 @@
     android:fitsSystemWindows="true"
     tools:context=".MainActivity">
 
+
     <android.support.design.widget.AppBarLayout
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
@@ -19,20 +20,25 @@
             android:background="?attr/colorPrimary"
             app:popupTheme="@style/AppTheme.PopupOverlay" />
 
-    </android.support.design.widget.AppBarLayout>
 
+    </android.support.design.widget.AppBarLayout>
     <include layout="@layout/content_main" />
 
-    <!--<android.support.design.widget.FloatingActionButton android:id="@+id/fab"-->
-        <!--android:layout_width="wrap_content" android:layout_height="wrap_content"-->
-        <!--android:layout_gravity="bottom|end" android:layout_margin="@dimen/fab_margin"-->
-        <!--android:src="@android:drawable/ic_dialog_email" />-->
 
     <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:padding="16dp">
+
+        <TextView
+            android:id="@+id/welcome_message"
+            android:paddingTop="50dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Hi!"
+            android:layout_gravity="left|top" />
 
         <io.github.yavski.fabspeeddial.FabSpeedDial
             android:id="@+id/fab_speed_dial"
@@ -44,7 +50,6 @@
             app:miniFabBackgroundTint="@android:color/white"
             app:miniFabDrawableTint="?attr/colorPrimaryDark"
             app:miniFabTitleTextColor="?attr/colorPrimaryDark" />
-        <!--app:fabDrawable="@drawable/ic_mail_outline_white_24px"-->
 
     </FrameLayout>
 
