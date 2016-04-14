@@ -3,7 +3,9 @@ package me.leedavison.backgroundtrial;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Application;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.content.Context;
@@ -53,24 +55,21 @@ import io.github.yavski.fabspeeddial.SimpleMenuListenerAdapter;
 
 public class MainActivity extends AppCompatActivity {
 
-    public static boolean isService = false;
-    String feedbackText = "No feedback!";
-    public boolean firstStart = true;
-
     private static final String DATA_KEY_NAME = "name";
     private static final String DATA_KEY_EMAIL = "email";
     private static final String DATA_KEY_AGE = "age";
     private static final String DATA_KEY_SCHOOL = "school";
+    public static boolean isService = false;
+    public static Context appContext;
+    public boolean firstStart = true;
+    public boolean trackMusic = true;
+    String feedbackText = "No feedback!";
     String userName;
     String userEmail;
     String userAge;
     String userSchool;
-
     TextView welcomeText;
-
     String userShortName[];
-
-    public static Context appContext;
 
     public static Context getContext() {
         return appContext;
@@ -87,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences prefs = this.getSharedPreferences(
                 "me.leedavison.backgroundtrial", Context.MODE_PRIVATE);
 
-        userName = prefs.getString(DATA_KEY_NAME, "newGuy");
+        userName = prefs.getString(DATA_KEY_NAME, "welcome to my music tracker!");
         userEmail = prefs.getString(DATA_KEY_EMAIL, null);
         userAge = prefs.getString(DATA_KEY_AGE, null);
         userSchool = prefs.getString(DATA_KEY_SCHOOL, null);
@@ -99,9 +98,6 @@ public class MainActivity extends AppCompatActivity {
 
 
         if (!userDetailsExist()) {
-
-            firstStart = false;
-
             Intent myIntent = new Intent(MainActivity.this, questionnaire.class);
             MainActivity.this.startActivity(myIntent);
         }
@@ -109,10 +105,15 @@ public class MainActivity extends AppCompatActivity {
 
         welcomeText = (TextView) findViewById(R.id.welcome_message);
 
-        welcomeText.setText("Hi, " + userShortName[0] + "!");
+        if (welcomeText != null) {
+            welcomeText.setText("Hi, " + userShortName[0] + "!");
+        }
 
 
         ImageButton startserviceButton = (ImageButton) findViewById(R.id.Button1);
+        ImageButton stopserviceButton = (ImageButton) findViewById(R.id.Button2);
+
+
         if (startserviceButton != null) {
             startserviceButton.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -126,21 +127,21 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
         }
-    }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
+        if (stopserviceButton != null) {
+            stopserviceButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    trackMusic = false;
 
-        welcomeText.setText("Hi, " + userShortName[0] + "!");
-
-        stopService(new Intent(MainActivity.this,
-                BackgroundService.class));
-        if (isService) {
-            TextView tv = (TextView) findViewById(R.id.textView1);
-            tv.setText("Click the button to resume service");
-            isService = false;
+                    Intent startMain = new Intent(Intent.ACTION_MAIN);
+                    startMain.addCategory(Intent.CATEGORY_HOME);
+                    startMain.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(startMain);
+                }
+            });
         }
+
 
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -220,6 +221,39 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
         }
+    }
+
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        if (trackMusic){
+            startService(new Intent(MainActivity.this, BackgroundService.class));
+            Intent startMain = new Intent(Intent.ACTION_MAIN);
+            startMain.addCategory(Intent.CATEGORY_HOME);
+            startMain.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(startMain);
+        }else{
+            Toast.makeText(MainActivity.this, "Music is not being tracked!", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        welcomeText.setText("Hi, " + userShortName[0] + "!");
+
+        stopService(new Intent(MainActivity.this,
+                BackgroundService.class));
+        if (isService) {
+            TextView tv = (TextView) findViewById(R.id.textView1);
+            assert tv != null;
+            tv.setText("Resume tracking");
+            isService = false;
+        }
+
     }
 
     private void sendEmail(String feedback) {

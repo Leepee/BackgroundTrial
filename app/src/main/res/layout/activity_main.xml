@@ -31,14 +31,6 @@
         android:layout_height="match_parent"
         android:padding="16dp">
 
-        <TextView
-            android:id="@+id/welcome_message"
-            android:paddingTop="50dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="Hi!"
-            android:layout_gravity="left|top" />
 
         <io.github.yavski.fabspeeddial.FabSpeedDial
             android:id="@+id/fab_speed_dial"

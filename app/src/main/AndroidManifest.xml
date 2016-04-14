@@ -39,10 +39,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".welcomeWizard"
-            android:label="@string/title_activity_welcome_wizard"
-            android:theme="@style/AppTheme" />
         <activity android:name=".questionnaire"></activity>
     </application>
 
