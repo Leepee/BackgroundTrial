@@ -44,7 +44,7 @@ public class BackgroundService extends Service {
 
         final Notification.Builder musicPlayingNotification = new Notification.Builder(getApplicationContext())
                 .setContentTitle("Thanks for helping my research!")
-                .setContentText("No music is playing")
+                .setContentText("No audio is playing")
                 .setSmallIcon(R.drawable.sleeping)
                 .setOngoing(true)
                 .setPriority(Notification.PRIORITY_MIN)
@@ -62,7 +62,7 @@ public class BackgroundService extends Service {
                     volumeLevel = manager.getStreamVolume(AudioManager.STREAM_MUSIC);
 
                     musicPlayingNotification.setContentTitle("Music is playing")
-                            .setContentText("Logging time and volume of music: " + volumeLevel)
+                            .setContentText("Logging time and volume of audio: " + volumeLevel)
                     .setSmallIcon(R.drawable.headphones);
 
                     mNM.notify(1, musicPlayingNotification.build());
@@ -71,7 +71,7 @@ public class BackgroundService extends Service {
 
                 }else{
 
-                    musicPlayingNotification.setContentTitle("No music is playing")
+                    musicPlayingNotification.setContentTitle("No audio is playing")
                             .setContentText("Thanks for helping with my research!")
                             .setSmallIcon(R.drawable.sleeping)
                             .setUsesChronometer(false);

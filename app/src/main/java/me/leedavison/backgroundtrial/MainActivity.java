@@ -92,8 +92,6 @@ public class MainActivity extends AppCompatActivity {
         userAge = prefs.getString(DATA_KEY_AGE, null);
         userSchool = prefs.getString(DATA_KEY_SCHOOL, null);
 
-        Toast.makeText(MainActivity.this, userName + userEmail + userAge + userSchool, Toast.LENGTH_SHORT).show();
-
 
         userShortName = userName != null ? userName.split(" ") : new String[0];
 
