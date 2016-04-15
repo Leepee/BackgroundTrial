@@ -27,6 +27,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.InputType;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Menu;
@@ -146,6 +147,8 @@ public class MainActivity extends AppCompatActivity {
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setIcon(R.drawable.headphonesicon2);
 
 
         FabSpeedDial fabSpeedDial = (FabSpeedDial) findViewById(R.id.fab_speed_dial);
@@ -165,26 +168,36 @@ public class MainActivity extends AppCompatActivity {
                         case R.id.action_mail:
                             sendEmail(feedbackText);
                             return true;
+
                         case R.id.action_bug:
-                            final EditText edittext = new EditText(getApplicationContext());
-                            AlertDialog.Builder feedbackForm = new AlertDialog.Builder(MainActivity.this);
-                            feedbackForm.setView(edittext)
-                                    .setMessage("What's the problem?")
+
+                            AlertDialog.Builder alert = new AlertDialog.Builder(MainActivity.this);
+                            LayoutInflater inflater = getLayoutInflater();
+                            View v = inflater.inflate(R.layout.alertdialog_edittext, null);
+                            alert.setMessage("What's the problem?")
                                     .setTitle("Sorry there's an issue!")
-                                    .setPositiveButton("Send Feedback", new DialogInterface.OnClickListener() {
-                                        @Override
+                                    .setIcon(R.drawable.bug);
+                            alert.setView(v);
+                            alert.setIcon(R.drawable.bug);
+                            final EditText edittext = (EditText) v.findViewById(R.id.alert_dialog_edit_text);
+
+                            alert.setPositiveButton("Send Feedback", new DialogInterface.OnClickListener() {
+                                                                        @Override
                                         public void onClick(DialogInterface dialog, int which) {
-                                            feedbackText = String.valueOf(edittext.getText());
+                                            if (edittext != null) {
+                                                feedbackText = edittext.getText().toString();
+                                            }
                                             sendEmail(feedbackText);
                                             feedbackText = "No feedback!";
                                         }
-                                    }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
 
                                 }
                             }).show();
-                            return true;
+                                return true;
+
 
                         case R.id.action_delete:
 
@@ -213,7 +226,6 @@ public class MainActivity extends AppCompatActivity {
 
                                 }
                             }).show();
-
                             return true;
                         default:
                             return true;
