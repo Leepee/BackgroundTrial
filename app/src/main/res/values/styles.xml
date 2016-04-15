@@ -2,10 +2,61 @@
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
-        <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <style name="welcome_page">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:paddingTop">100dp</item>
+        <item name="android:paddingBottom">30dp</item>
+        <item name="android:clipToPadding">false</item>
+        <item name="android:theme">@style/AppTheme.NoActionBar</item>
+    </style>
+
+    <style name="text_title">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textSize">30dp</item>
+        <item name="android:textColor">#ffffff</item>
+        <item name="android:layout_marginBottom">8dp</item>
+        <item name="android:fontFamily">sans-serif-light</item>
+    </style>
+
+    <style name="text_subtitle">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textSize">20dp</item>
+        <item name="android:textColor">#ffffff</item>
+        <item name="android:layout_marginBottom">16dp</item>
+        <item name="android:layout_marginLeft">30dp</item>
+        <item name="android:layout_marginRight">30dp</item>
+        <item name="android:fontFamily">sans-serif-thin</item>
+    </style>
+
+    <style name="YourThemeForSingleInputFormActivity" parent="Theme.AppCompat.Light.NoActionBar">
+
+        <!-- Used for: input field background -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+
+        <!-- Used for: form progress color, status bar color (API 21+) -->
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <!-- Used for: title text color, error text color -->
+        <item name="android:textColorPrimary">@color/white</item>
+
+        <!-- Used for: details text color, step indicator text color -->
+        <item name="android:textColorSecondary">@color/material_black_54</item>
+
+        <!-- Used for: input text color, input widget color -->
+        <item name="android:textColorPrimaryInverse">@color/white</item>
+
+        <!-- Used for: input widget color -->
+        <item name="android:textColorSecondaryInverse">@color/white</item>
+
     </style>
 
     <style name="AppTheme.NoActionBar">

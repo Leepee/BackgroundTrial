@@ -2,22 +2,14 @@ package me.leedavison.backgroundtrial;
 
 import android.app.Notification;
 import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.media.AudioManager;
 import android.os.Binder;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.IBinder;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.NotificationManagerCompat;
-import android.util.Log;
-import android.widget.Toast;
 
-import java.io.File;
 import java.io.FileOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -53,7 +45,7 @@ public class BackgroundService extends Service {
         final Notification.Builder musicPlayingNotification = new Notification.Builder(getApplicationContext())
                 .setContentTitle("Thanks for helping my research!")
                 .setContentText("No music is playing")
-                .setSmallIcon(R.mipmap.ic_launcher)
+                .setSmallIcon(R.drawable.sleeping)
                 .setOngoing(true)
                 .setPriority(Notification.PRIORITY_MIN)
                 .setUsesChronometer(false);
@@ -70,7 +62,8 @@ public class BackgroundService extends Service {
                     volumeLevel = manager.getStreamVolume(AudioManager.STREAM_MUSIC);
 
                     musicPlayingNotification.setContentTitle("Music is playing")
-                            .setContentText("Logging time and volume of music: " + volumeLevel);
+                            .setContentText("Logging time and volume of music: " + volumeLevel)
+                    .setSmallIcon(R.drawable.headphones);
 
                     mNM.notify(1, musicPlayingNotification.build());
 
@@ -80,6 +73,7 @@ public class BackgroundService extends Service {
 
                     musicPlayingNotification.setContentTitle("No music is playing")
                             .setContentText("Thanks for helping with my research!")
+                            .setSmallIcon(R.drawable.sleeping)
                             .setUsesChronometer(false);
 
                     mNM.notify(1, musicPlayingNotification.build());

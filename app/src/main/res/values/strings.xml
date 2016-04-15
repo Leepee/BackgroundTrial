@@ -1,6 +1,21 @@
 <resources>
     <string name="app_name">Music Tracker</string>
-    <string name="action_settings">Settings</string>
     <string name="local_service_started">Local Service Started</string>
     <string name="title_activity_welcome_wizard">welcomeWizard</string>
+
+
+    <!--Questionnaire Strings-->
+    <string name="example_error">Error thing</string>
+    <string name="q_name">Who are you?</string>
+    <string name="q_name_details">Please let me know your name.</string>
+    <string name="q_email">What\'s your Email</string>
+    <string name="q_email_error">Please enter valid email address</string>
+    <string name="q_email_details">This is so I can get back to you if I need to.</string>
+    <string name="q_age">How old are you?</string>
+    <string name="q_age_details">I\'m interested to see if there\'s a relationship between age and amount of music listening.</string>
+    <string name="q_school">Which school?</string>
+    <string name="q_school_details">I\'m interested to know if school makes a difference to your listening habits.</string>
+    <string name="welcome_explaination">When you click \"Start tracking\" (or leave this app) a notification will appear in your notification tray, and your music listenign habits will be tracked. If at any time you want this to stop happening, hit the stop button and the app will exit and stop tracking. For the purposes of my research, it would really help me if you keep the app tracking! Thanks for helping.</string>
+
+
 </resources>
