@@ -3,16 +3,24 @@ package me.leedavison.backgroundtrial;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.Service;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
+import android.media.session.MediaController;
+import android.media.session.MediaSessionManager;
 import android.os.Binder;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.provider.MediaStore;
+import android.service.notification.NotificationListenerService;
+import android.support.v4.media.session.MediaControllerCompat;
 
 import java.io.FileOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -39,6 +47,7 @@ public class BackgroundService extends Service {
 
         mNM = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         manager = (AudioManager)this.getSystemService(Context.AUDIO_SERVICE);
+
 
         ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
 
@@ -95,6 +104,17 @@ public class BackgroundService extends Service {
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
         String time = sdf.format(new Date());
         String entry = time + " , " + vol +"\n";
+        String playingApp;
+
+//        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+//            MediaSessionManager mediaSessionManager = (MediaSessionManager) getSystemService(Context.MEDIA_SESSION_SERVICE);
+//            List<MediaController> listController = mediaSessionManager.getActiveSessions(null);
+//            MediaController controller = listController.get(0);
+//
+//            playingApp = controller.getPackageName();
+//
+//            entry = time + " , " + vol + " , " + playingApp + "\n";
+//        }
 
         try {
             FileOutputStream out = openFileOutput(fileName, Context.MODE_APPEND);
