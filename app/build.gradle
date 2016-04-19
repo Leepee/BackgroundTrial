@@ -29,7 +29,6 @@ dependencies {
     compile 'com.google.android.gms:play-services:8.4.0'
     compile 'com.github.yesidlazaro:GmailBackground:1.1'
     compile 'io.github.yavski:fab-speed-dial:1.0.3'
-    compile 'com.redbooth:WelcomeCoordinator:1.0.1'
     compile 'com.jakewharton:butterknife:7.0.1'
     compile 'com.github.HeinrichReimer:material-singleinputform:2.1.0'
 }

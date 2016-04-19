@@ -33,7 +33,9 @@ public class BackgroundService extends Service {
     private final IBinder mBinder = new LocalBinder();
     private String newtext;
     int volumeLevel;
+    int savedLevel;
     AudioManager manager;
+    boolean isSaving;
 
 
     public class LocalBinder extends Binder {
@@ -66,17 +68,25 @@ public class BackgroundService extends Service {
             public void run() {
 
 
-                if(manager.isMusicActive())
-                {
+                if(manager.isMusicActive()){
+
                     volumeLevel = manager.getStreamVolume(AudioManager.STREAM_MUSIC);
+
+                    if (isSaving){
+                        if (volumeLevel==savedLevel){
+
+
+                        }
+                    }
 
                     musicPlayingNotification.setContentTitle("Music is playing")
                             .setContentText("Logging time and volume of audio: " + volumeLevel)
-                    .setSmallIcon(R.drawable.headphones);
-
+                            .setSmallIcon(R.drawable.headphones);
                     mNM.notify(1, musicPlayingNotification.build());
-
                     saveResult(volumeLevel);
+
+                    isSaving = true;
+                    savedLevel = volumeLevel;
 
                 }else{
 
@@ -104,12 +114,14 @@ public class BackgroundService extends Service {
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
         String time = sdf.format(new Date());
         String entry = time + " , " + vol +"\n";
-        String playingApp;
-
+//        String playingApp;
+//
 //        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-//            MediaSessionManager mediaSessionManager = (MediaSessionManager) getSystemService(Context.MEDIA_SESSION_SERVICE);
-//            List<MediaController> listController = mediaSessionManager.getActiveSessions(null);
-//            MediaController controller = listController.get(0);
+//            MediaSessionManager mediaSessionManager = (MediaSessionManager) this.getSystemService(Context.MEDIA_SESSION_SERVICE);
+//            List<MediaController> listController;
+//
+//        listController = mediaSessionManager.getActiveSessions(AudioManager.OnAudioFocusChangeListener);
+//        MediaController controller = listController.get(0);
 //
 //            playingApp = controller.getPackageName();
 //

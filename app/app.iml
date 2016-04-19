@@ -117,7 +117,6 @@
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.google.android.gms/play-services-wallet/8.4.0/jars" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.google.android.gms/play-services-wearable/8.4.0/jars" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.google.android.gms/play-services/8.4.0/jars" />
-      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.redbooth/WelcomeCoordinator/1.0.1/jars" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/io.github.yavski/fab-speed-dial/1.0.3/jars" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/org.adw.library/discrete-seekbar/1.0.0/jars" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/incremental" />
@@ -145,7 +144,6 @@
     <orderEntry type="library" exported="" name="fab-speed-dial-1.0.3" level="project" />
     <orderEntry type="library" exported="" name="appcompat-v7-23.3.0" level="project" />
     <orderEntry type="library" exported="" name="play-services-identity-8.4.0" level="project" />
-    <orderEntry type="library" exported="" name="WelcomeCoordinator-1.0.1" level="project" />
     <orderEntry type="library" exported="" name="play-services-vision-8.4.0" level="project" />
     <orderEntry type="library" exported="" name="play-services-auth-8.4.0" level="project" />
     <orderEntry type="library" exported="" name="discrete-seekbar-1.0.0" level="project" />
