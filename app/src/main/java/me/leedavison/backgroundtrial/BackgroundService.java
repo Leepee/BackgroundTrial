@@ -28,14 +28,13 @@ import java.util.concurrent.TimeUnit;
 
 public class BackgroundService extends Service {
     private NotificationManager mNM;
-    Bundle b;
-    Intent notificationIntent;
     private final IBinder mBinder = new LocalBinder();
     private String newtext;
     int volumeLevel;
     int savedLevel;
     AudioManager manager;
     boolean isSaving;
+    String state;
 
 
     public class LocalBinder extends Binder {
@@ -48,7 +47,7 @@ public class BackgroundService extends Service {
     public void onCreate() {
 
         mNM = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        manager = (AudioManager)this.getSystemService(Context.AUDIO_SERVICE);
+        manager = (AudioManager) this.getSystemService(Context.AUDIO_SERVICE);
 
 
         ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
@@ -67,38 +66,48 @@ public class BackgroundService extends Service {
             @Override
             public void run() {
 
-
-                if(manager.isMusicActive()){
+                if (manager.isMusicActive()) {
 
                     volumeLevel = manager.getStreamVolume(AudioManager.STREAM_MUSIC);
 
-                    if (isSaving){
-                        if (volumeLevel==savedLevel){
+                    if (!isSaving) {
+                        state = "Audio started";
+                        saveResult(volumeLevel, state);
+                        savedLevel = volumeLevel;
+                        isSaving = true;
 
-
-                        }
+                        musicPlayingNotification.setContentTitle("Audio is playing")
+                                .setContentText("Logging time and volume of audio: " + volumeLevel)
+                                .setSmallIcon(R.drawable.headphones);
+                        mNM.notify(1, musicPlayingNotification.build());
                     }
 
-                    musicPlayingNotification.setContentTitle("Music is playing")
-                            .setContentText("Logging time and volume of audio: " + volumeLevel)
-                            .setSmallIcon(R.drawable.headphones);
-                    mNM.notify(1, musicPlayingNotification.build());
-                    saveResult(volumeLevel);
+                    if (volumeLevel != savedLevel) {
+                        state = "Volume changed";
+                        saveResult(volumeLevel, state);
 
-                    isSaving = true;
-                    savedLevel = volumeLevel;
+                        musicPlayingNotification.setContentText("Logging time and volume of audio: " + volumeLevel);
+                        mNM.notify(1, musicPlayingNotification.build());
 
-                }else{
+                        isSaving = true;
+                        savedLevel = volumeLevel;
+                    }
 
-                    musicPlayingNotification.setContentTitle("No audio is playing")
-                            .setContentText("Thanks for helping with my research!")
-                            .setSmallIcon(R.drawable.sleeping)
-                            .setUsesChronometer(false);
+                } else {
 
-                    mNM.notify(1, musicPlayingNotification.build());
+                    if (isSaving) {
+                        isSaving = false;
+                        state = "Audio stopped";
 
+                        saveResult(volumeLevel, state);
+
+                        musicPlayingNotification.setContentTitle("No audio is playing")
+                                .setContentText("Thanks for helping with my research!")
+                                .setSmallIcon(R.drawable.sleeping)
+                                .setUsesChronometer(false);
+                        mNM.notify(1, musicPlayingNotification.build());
+                    }
                 }
-
             }
         }, 0, 5, TimeUnit.SECONDS);
 
@@ -107,13 +116,13 @@ public class BackgroundService extends Service {
 
     }
 
-    public boolean saveResult(int vol){
+    public boolean saveResult(int vol, String state) {
 
 
         String fileName = "Headphone_Log.csv";
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
         String time = sdf.format(new Date());
-        String entry = time + " , " + vol +"\n";
+        String entry = state + " , " + time + " , " + vol + "\n";
 //        String playingApp;
 //
 //        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
@@ -132,17 +141,18 @@ public class BackgroundService extends Service {
             FileOutputStream out = openFileOutput(fileName, Context.MODE_APPEND);
             out.write(entry.getBytes());
             out.close();
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
 
-
         return true;
     }
+
     public int onStartCommand(Intent intent, int flags, int startId) {
         return START_STICKY;
     }
+
     public void onDestroy() {
         mNM.cancel(R.string.local_service_started);
         stopSelf();

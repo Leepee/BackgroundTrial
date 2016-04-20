@@ -54,14 +54,6 @@ public class questionnaire extends SingleInputFormActivity {
         steps.add(new TextStep(context, DATA_KEY_SCHOOL, InputType.TYPE_CLASS_TEXT, R.string.q_school, R.string.example_error, R.string.q_school_details)
         );
 
-//        steps.add(
-//                new DateStep(context, DATA_KEY_DOB, InputType.TYPE_CLASS_DATETIME, R.string.example, R.string.example_error, new DateStep.StepChecker() {
-//                    @Override
-//                    public boolean check(int i, int i1, int i2) {
-//                        return false;
-//                    }
-//                })
-//        );
 
 
         //Add more steps here...
@@ -74,11 +66,12 @@ public class questionnaire extends SingleInputFormActivity {
             String fileName = "Headphone_Log.csv";
             SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
             String time = sdf.format(new Date());
-            String entry = "Time , Volume level" + "\n" +
-                    prefs.getString(DATA_KEY_NAME,null) +
-                    prefs.getString(DATA_KEY_EMAIL,null) +
-                    prefs.getString(DATA_KEY_AGE,null) +
-                    prefs.getString(DATA_KEY_SCHOOL,null) + "\n"
+            String entry =
+                    prefs.getString(DATA_KEY_NAME,null) + "," +
+                    prefs.getString(DATA_KEY_EMAIL,null) + "," +
+                    prefs.getString(DATA_KEY_AGE,null) + "," +
+                    prefs.getString(DATA_KEY_SCHOOL,null) + "\n\n" +
+                    "Time , Volume level" + "\n"
                     + time + " , Start of log " + "\n";
 
             try {
@@ -102,11 +95,6 @@ public class questionnaire extends SingleInputFormActivity {
         prefs.edit().putString(DATA_KEY_SCHOOL,TextStep.text(data,DATA_KEY_SCHOOL)).apply();
 
         initilizeCSV();
-
-//        String text = TextStep.text(data, DATA_KEY_EXAMPLE);
-        Toast.makeText(questionnaire.this, TextStep.text(data, DATA_KEY_NAME),Toast.LENGTH_SHORT).show();
-
-
 
     }
 }
