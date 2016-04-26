@@ -2,6 +2,7 @@ package me.leedavison.backgroundtrial;
 
 import android.app.Notification;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.ComponentName;
 import android.content.Context;
@@ -16,6 +17,7 @@ import android.os.IBinder;
 import android.provider.MediaStore;
 import android.service.notification.NotificationListenerService;
 import android.support.v4.media.session.MediaControllerCompat;
+import android.util.Log;
 
 import java.io.FileOutputStream;
 import java.text.SimpleDateFormat;
@@ -46,6 +48,10 @@ public class BackgroundService extends Service {
     @Override
     public void onCreate() {
 
+        Intent intent = new Intent(this, MainActivity.class);
+// use System.currentTimeMillis() to have a unique ID for the pending intent
+        PendingIntent pIntent = PendingIntent.getActivity(this, (int) System.currentTimeMillis(), intent, 0);
+
         mNM = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         manager = (AudioManager) this.getSystemService(Context.AUDIO_SERVICE);
 
@@ -57,6 +63,7 @@ public class BackgroundService extends Service {
                 .setContentText("No audio is playing")
                 .setSmallIcon(R.drawable.sleeping)
                 .setOngoing(true)
+                .setContentIntent(pIntent)
                 .setPriority(Notification.PRIORITY_MIN)
                 .setUsesChronometer(false);
         mNM.notify(1, musicPlayingNotification.build());
@@ -66,7 +73,8 @@ public class BackgroundService extends Service {
             @Override
             public void run() {
 
-                if (manager.isMusicActive()) {
+                if (manager.isMusicActive() && (manager.isWiredHeadsetOn() || manager.isBluetoothA2dpOn())) {
+                    if (manager.isBluetoothA2dpOn()) Log.i("Bluetooth Audio: ", "on");
 
                     volumeLevel = manager.getStreamVolume(AudioManager.STREAM_MUSIC);
 
@@ -109,20 +117,21 @@ public class BackgroundService extends Service {
                     }
                 }
             }
-        }, 0, 5, TimeUnit.SECONDS);
+        }, 0, 10, TimeUnit.SECONDS);
 
 
         newtext = "BackGroundApp Service Running";
 
     }
 
-    public boolean saveResult(int vol, String state) {
+    public void saveResult(int vol, String state) {
 
 
         String fileName = "Headphone_Log.csv";
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
         String time = sdf.format(new Date());
         String entry = state + " , " + time + " , " + vol + "\n";
+
 //        String playingApp;
 //
 //        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
@@ -144,9 +153,6 @@ public class BackgroundService extends Service {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-
-        return true;
     }
 
     public int onStartCommand(Intent intent, int flags, int startId) {

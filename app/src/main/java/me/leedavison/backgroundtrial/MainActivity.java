@@ -206,7 +206,7 @@ public class MainActivity extends AppCompatActivity {
 
                             AlertDialog.Builder fileDeleteDialog = new AlertDialog.Builder(MainActivity.this);
                             fileDeleteDialog.setView(passwordText)
-                                    .setMessage("This will delete the log so far... Are you sure you want to do that? \\n What's the password?")
+                                    .setMessage("This will delete the log so far... Are you sure you want to do that? \n What's the password?")
                                     .setTitle("Whoah there...")
                                     .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
                                         @Override
@@ -232,7 +232,6 @@ public class MainActivity extends AppCompatActivity {
             });
         }
     }
-
 
     @Override
     protected void onPause() {
@@ -263,7 +262,6 @@ public class MainActivity extends AppCompatActivity {
             tv.setText("Resume tracking");
             isService = false;
         }
-
     }
 
     private void sendEmail(String feedback) {
@@ -275,21 +273,21 @@ public class MainActivity extends AppCompatActivity {
                 .withUsername("SolentHearingHealth@gmail.com")
                 .withPassword("anechoic3745")
                 .withMailto("lee.davison@solent.ac.uk")
-                .withSubject("Data submission from XXX")
+                .withSubject("Data submission from " + userName)
                 .withBody(feedback)
                 .withAttachments(c.getFilesDir() + "/Headphone_Log.csv")
                 .withOnSuccessCallback(new BackgroundMail.OnSuccessCallback() {
                     @Override
                     public void onSuccess() {
                         Log.e("Email status: ", "worked");
-//                        Toast.makeText(MainActivity.this, "email sent!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MainActivity.this, "email sent!", Toast.LENGTH_SHORT).show();
                     }
                 })
                 .withOnFailCallback(new BackgroundMail.OnFailCallback() {
                     @Override
                     public void onFail() {
                         Log.e("Email status: ", "worked");
-//                        Toast.makeText(MainActivity.this, "Email failed.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MainActivity.this, "Email failed.", Toast.LENGTH_SHORT).show();
                     }
                 })
                 .send();
@@ -321,6 +319,7 @@ public class MainActivity extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        Toast.makeText(MainActivity.this, "CSV data file deleted", Toast.LENGTH_SHORT).show();
     }
 
     @Override
