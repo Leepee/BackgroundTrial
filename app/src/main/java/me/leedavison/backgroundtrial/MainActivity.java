@@ -28,6 +28,7 @@ import com.creativityapps.gmailbackgroundlibrary.BackgroundMail;
 import java.io.FileOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
 import io.github.yavski.fabspeeddial.FabSpeedDial;
 import io.github.yavski.fabspeeddial.SimpleMenuListenerAdapter;
 
@@ -123,7 +124,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
 
-
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
@@ -161,21 +161,21 @@ public class MainActivity extends AppCompatActivity {
                             final EditText edittext = (EditText) v.findViewById(R.id.alert_dialog_edit_text);
 
                             alert.setPositiveButton("Send Feedback", new DialogInterface.OnClickListener() {
-                                                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            if (edittext != null) {
-                                                feedbackText = edittext.getText().toString();
-                                            }
-                                            sendEmail(feedbackText);
-                                            feedbackText = "No feedback!";
-                                        }
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    if (edittext != null) {
+                                        feedbackText = edittext.getText().toString();
+                                    }
+                                    sendEmail(feedbackText);
+                                    feedbackText = "No feedback!";
+                                }
                             }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
 
                                 }
                             }).show();
-                                return true;
+                            return true;
 
 
                         case R.id.action_delete:
@@ -218,13 +218,13 @@ public class MainActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
 
-        if (trackMusic && !firstBoot){
+        if (trackMusic && !firstBoot) {
             startService(new Intent(MainActivity.this, BackgroundService.class));
             Intent startMain = new Intent(Intent.ACTION_MAIN);
             startMain.addCategory(Intent.CATEGORY_HOME);
             startMain.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(startMain);
-        }else if (!firstBoot){
+        } else if (!firstBoot) {
             Toast.makeText(MainActivity.this, "Music is not being tracked.", Toast.LENGTH_SHORT).show();
         }
     }
@@ -233,8 +233,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        if (userDetailsExist()){
-            trackMusic=true;
+        if (userDetailsExist()) {
+            trackMusic = true;
         }
 
         welcomeText.setText("Hi, " + userShortName[0] + "!");
@@ -253,8 +253,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onRestart() {
         super.onRestart();
 
-        if (userDetailsExist()){
-            trackMusic=true;
+        if (userDetailsExist()) {
+            trackMusic = true;
         }
 
     }
