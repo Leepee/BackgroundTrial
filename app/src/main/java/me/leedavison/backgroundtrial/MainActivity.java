@@ -1,40 +1,23 @@
 package me.leedavison.backgroundtrial;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.annotation.TargetApi;
-import android.app.Activity;
+
 import android.app.AlertDialog;
-import android.app.Application;
-import android.app.Notification;
-import android.app.NotificationManager;
+
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
-import android.media.AudioManager;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.design.internal.NavigationMenu;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.InputType;
 import android.util.Log;
-import android.view.ContextThemeWrapper;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.ViewAnimationUtils;
-import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -42,15 +25,9 @@ import android.widget.Toast;
 
 import com.creativityapps.gmailbackgroundlibrary.BackgroundMail;
 
-import java.io.File;
 import java.io.FileOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.StringTokenizer;
-
-import javax.mail.MessagingException;
-
-import au.com.bytecode.opencsv.CSV;
 import io.github.yavski.fabspeeddial.FabSpeedDial;
 import io.github.yavski.fabspeeddial.SimpleMenuListenerAdapter;
 
@@ -62,8 +39,8 @@ public class MainActivity extends AppCompatActivity {
     private static final String DATA_KEY_SCHOOL = "school";
     public static boolean isService = false;
     public static Context appContext;
-    public boolean firstStart = true;
-    public boolean trackMusic = true;
+    public boolean trackMusic = false;
+    boolean firstBoot;
     String feedbackText = "No feedback!";
     String userName;
     String userEmail;
@@ -97,10 +74,14 @@ public class MainActivity extends AppCompatActivity {
 
 
         if (!userDetailsExist()) {
+            trackMusic = false;
+            firstBoot = true;
             Intent myIntent = new Intent(MainActivity.this, questionnaire.class);
             MainActivity.this.startActivity(myIntent);
+        } else {
+            trackMusic = true;
+            firstBoot = false;
         }
-
 
         welcomeText = (TextView) findViewById(R.id.welcome_message);
 
@@ -154,7 +135,7 @@ public class MainActivity extends AppCompatActivity {
             fabSpeedDial.setMenuListener(new SimpleMenuListenerAdapter() {
                 @Override
                 public boolean onPrepareMenu(NavigationMenu navigationMenu) {
-                    // TODO: Do something with yout menu items, or return false if you don't want to show them
+                    // TODO: Do something with your menu items, or return false if you don't want to show them
                     return true;
 
                 }
@@ -237,20 +218,24 @@ public class MainActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
 
-        if (trackMusic){
+        if (trackMusic && !firstBoot){
             startService(new Intent(MainActivity.this, BackgroundService.class));
             Intent startMain = new Intent(Intent.ACTION_MAIN);
             startMain.addCategory(Intent.CATEGORY_HOME);
             startMain.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(startMain);
-        }else{
-            Toast.makeText(MainActivity.this, "Music is not being tracked!", Toast.LENGTH_SHORT).show();
+        }else if (!firstBoot){
+            Toast.makeText(MainActivity.this, "Music is not being tracked.", Toast.LENGTH_SHORT).show();
         }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+
+        if (userDetailsExist()){
+            trackMusic=true;
+        }
 
         welcomeText.setText("Hi, " + userShortName[0] + "!");
 
@@ -262,6 +247,16 @@ public class MainActivity extends AppCompatActivity {
             tv.setText("Resume tracking");
             isService = false;
         }
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+
+        if (userDetailsExist()){
+            trackMusic=true;
+        }
+
     }
 
     private void sendEmail(String feedback) {
