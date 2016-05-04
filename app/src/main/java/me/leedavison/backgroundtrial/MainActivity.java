@@ -219,11 +219,11 @@ public class MainActivity extends AppCompatActivity {
         super.onPause();
 
         if (trackMusic && !firstBoot) {
-            startService(new Intent(MainActivity.this, BackgroundService.class));
-            Intent startMain = new Intent(Intent.ACTION_MAIN);
-            startMain.addCategory(Intent.CATEGORY_HOME);
-            startMain.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(startMain);
+//            startService(new Intent(MainActivity.this, BackgroundService.class));
+//            Intent startMain = new Intent(Intent.ACTION_MAIN);
+//            startMain.addCategory(Intent.CATEGORY_HOME);
+//            startMain.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//            startActivity(startMain);
         } else if (!firstBoot) {
             Toast.makeText(MainActivity.this, "Music is not being tracked.", Toast.LENGTH_SHORT).show();
         }
@@ -333,6 +333,8 @@ public class MainActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            Intent intent = new Intent(this, LevelMeterActivity.class);
+            startActivity(intent);
             return true;
         }
 
