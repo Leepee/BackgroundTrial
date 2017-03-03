@@ -26,6 +26,7 @@ import com.creativityapps.gmailbackgroundlibrary.BackgroundMail;
 import java.io.FileOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 import io.github.yavski.fabspeeddial.FabSpeedDial;
 import io.github.yavski.fabspeeddial.SimpleMenuListenerAdapter;
@@ -124,7 +125,7 @@ public class MainActivity extends AppCompatActivity {
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        if (getSupportActionBar() != null) getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setIcon(R.drawable.headphonesicon2);
 
 
@@ -216,15 +217,15 @@ public class MainActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
 
-        if (trackMusic && !firstBoot) {
+//        if (trackMusic && !firstBoot) {
 //            startService(new Intent(MainActivity.this, BackgroundService.class));
 //            Intent startMain = new Intent(Intent.ACTION_MAIN);
 //            startMain.addCategory(Intent.CATEGORY_HOME);
 //            startMain.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 //            startActivity(startMain);
-        } else if (!firstBoot) {
-            Toast.makeText(MainActivity.this, "Music is not being tracked.", Toast.LENGTH_SHORT).show();
-        }
+//        } else if (!firstBoot) {
+//            Toast.makeText(MainActivity.this, "Music is not being tracked.", Toast.LENGTH_SHORT).show();
+//        }
     }
 
     @Override
@@ -297,9 +298,10 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void resetFile() {
+        //ToDo: Check this to make sure it works!
 
         String fileName = "Headphone_Log.csv";
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss", Locale.ENGLISH);
         String time = sdf.format(new Date());
         String entry = "Time , Volume level" + "\n" + time + " , Start of log " + "\n";
 

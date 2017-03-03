@@ -33,6 +33,9 @@
     <string name="gain_error_text">Sensitivity correction:</string>
     <string name="gain">0.0</string>
     <string name="sample_rate">Sample Rate</string>
+    <string name="startup_greeting">Hi!</string>
+    <string name="start_tracking">Start Tracking</string>
+    <string name="stop_tracking">Stop Tracking</string>
     <string-array name="sample_rate_array">
         <item>8000</item>
         <item>16000</item>
