@@ -43,20 +43,17 @@ import android.util.Log;
  *
  */
 public class MicrophoneInput implements Runnable{
-  int mSampleRate = 8000;
-  int mAudioSource = MediaRecorder.AudioSource.VOICE_RECOGNITION;
+    private static final String TAG = "MicrophoneInput";
   final int mChannelConfig = AudioFormat.CHANNEL_IN_MONO;
   final int mAudioFormat = AudioFormat.ENCODING_PCM_16BIT;
-
   private final MicrophoneInputListener mListener;
+    int mSampleRate = 8000;
+    //  int mAudioSource = MediaRecorder.AudioSource.VOICE_RECOGNITION;
+    int mAudioSource = MediaRecorder.AudioSource.DEFAULT;
+    AudioRecord recorder;
+    int mTotalSamples = 0;
   private Thread mThread;
   private boolean mRunning;
-
-  AudioRecord recorder;
-
-  int mTotalSamples = 0;
-
-  private static final String TAG = "MicrophoneInput"; 
 
   public MicrophoneInput(MicrophoneInputListener listener) {
     mListener = listener;
@@ -97,14 +94,23 @@ public class MicrophoneInput implements Runnable{
     int buffer1000msSize = bufferSize(mSampleRate, mChannelConfig,
         mAudioFormat);
 
-    try {
-      recorder = new AudioRecord(
-          mAudioSource,
-          mSampleRate,
-          mChannelConfig,
-          mAudioFormat,
-          buffer1000msSize);
-      recorder.startRecording();
+//    try {
+//      recorder = new AudioRecord(
+//          mAudioSource,
+//          mSampleRate,
+//          mChannelConfig,
+//          mAudioFormat,
+//          buffer1000msSize);
+//      recorder.startRecording();
+
+      try {
+          recorder = new AudioRecord(
+                  MediaRecorder.AudioSource.MIC,
+                  16000,
+                  AudioFormat.CHANNEL_IN_MONO,
+                  AudioFormat.ENCODING_PCM_16BIT,
+                  AudioRecord.getMinBufferSize(16000, AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT) * 2);
+          recorder.startRecording();
 
       while (mRunning) {      
         int numSamples = recorder.read(buffer20ms, 0, buffer20ms.length);        

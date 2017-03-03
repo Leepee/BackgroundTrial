@@ -18,6 +18,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.MediaRecorder;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -26,6 +27,8 @@ import android.widget.TextView;
 import android.widget.ToggleButton;
 
 import java.text.DecimalFormat;
+
+import static me.leedavison.backgroundtrial.MainActivity.getContext;
 
 /**
  * This is the main activity of the SPL meter.
@@ -40,11 +43,12 @@ import java.text.DecimalFormat;
 public class LevelMeterActivity extends Activity implements
     MicrophoneInputListener {
 
+    private static final String TAG = "LevelMeterActivity";
   MicrophoneInput micInput;  // The micInput object provides real time audio.
   TextView mdBTextView;
   TextView mdBFractionTextView;
   BarLevelDrawable mBarLevel;
-  private TextView mGainTextView;
+    String[] perms = {"android.permission.RECORD_AUDIO"};
 
   double mOffsetdB = 10;  // Offset for bar, i.e. 0 lit LEDs at 10 dB.
   // The Google ASR input requirements state that audio input sensitivity
@@ -55,14 +59,12 @@ public class LevelMeterActivity extends Activity implements
   double mDifferenceFromNominal = 0.0;
   double mRmsSmoothed;  // Temporally filtered version of RMS.
   double mAlpha = 0.9;  // Coefficient of IIR smoothing filter for RMS.
+    private TextView mGainTextView;
   private int mSampleRate;  // The audio sampling rate to use.
   private int mAudioSource;  // The audio source to use.
-  
   // Variables to monitor UI update and check for slow updates.
   private volatile boolean mDrawing;
   private volatile int mDrawingCollided;
-
-  private static final String TAG = "LevelMeterActivity";
   
   /** Called when the activity is first created. */
   @Override
@@ -89,6 +91,16 @@ public class LevelMeterActivity extends Activity implements
 
     final ToggleButton onOffButton=(ToggleButton)findViewById(
         R.id.on_off_toggle_button);
+
+      // Sort out perms
+
+      if (Build.VERSION.SDK_INT >= 23) {
+          int res = getContext().checkCallingOrSelfPermission(perms[0]);
+          Log.i("permission state: ", String.valueOf(res));
+          if (res != 0) {
+              requestPermissions(perms, 200);
+          }
+      }
 
     ToggleButton.OnClickListener tbListener =
         new ToggleButton.OnClickListener() {
@@ -150,25 +162,6 @@ public class LevelMeterActivity extends Activity implements
     settingsButton.setOnClickListener(settingsBtnListener);
   }
 
-  /** 
-   * Inner class to handle press of gain adjustment buttons.
-   */
-  private class DbClickListener implements Button.OnClickListener {
-    private double gainIncrement;
-
-    public DbClickListener(double gainIncrement) {
-      this.gainIncrement = gainIncrement;
-    }
-
-    @Override
-    public void onClick(View v) {
-      LevelMeterActivity.this.mGain *= Math.pow(10, gainIncrement / 20.0);
-      mDifferenceFromNominal -= gainIncrement;
-      DecimalFormat df = new DecimalFormat("##.# dB");
-      mGainTextView.setText(df.format(mDifferenceFromNominal));
-    }
-  }
-
   /**
    * Method to read the sample rate and audio source preferences.
    */
@@ -176,10 +169,10 @@ public class LevelMeterActivity extends Activity implements
     SharedPreferences preferences = getSharedPreferences("LevelMeter",
         MODE_PRIVATE);
     mSampleRate = preferences.getInt("SampleRate", 8000);
-    mAudioSource = preferences.getInt("AudioSource", 
-        MediaRecorder.AudioSource.VOICE_RECOGNITION);
+      mAudioSource = preferences.getInt("AudioSource",
+              MediaRecorder.AudioSource.MIC);
   }
-  
+
   /**
    *  This method gets called by the micInput object owned by this activity.
    *  It first computes the RMS value and then it sets up a bit of
@@ -199,9 +192,9 @@ public class LevelMeterActivity extends Activity implements
       // Compute a smoothed version for less flickering of the display.
       mRmsSmoothed = mRmsSmoothed * mAlpha + (1 - mAlpha) * rms;
       final double rmsdB = 20.0 * Math.log10(mGain * mRmsSmoothed);
-      
+
       // Set up a method that runs on the UI thread to update of the LED bar
-      // and numerical display.      
+        // and numerical display.
       mBarLevel.post(new Runnable() {
         @Override
         public void run() {
@@ -223,5 +216,24 @@ public class LevelMeterActivity extends Activity implements
       Log.v(TAG, "Level bar update collision, i.e. update took longer " +
           "than 20ms. Collision count" + Double.toString(mDrawingCollided));
     }
+  }
+
+    /**
+     * Inner class to handle press of gain adjustment buttons.
+     */
+    private class DbClickListener implements Button.OnClickListener {
+        private double gainIncrement;
+
+        public DbClickListener(double gainIncrement) {
+            this.gainIncrement = gainIncrement;
+        }
+
+        @Override
+        public void onClick(View v) {
+            LevelMeterActivity.this.mGain *= Math.pow(10, gainIncrement / 20.0);
+            mDifferenceFromNominal -= gainIncrement;
+            DecimalFormat df = new DecimalFormat("##.# dB");
+            mGainTextView.setText(df.format(mDifferenceFromNominal));
+        }
   }
 }

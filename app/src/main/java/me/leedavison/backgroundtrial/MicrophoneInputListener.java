@@ -32,5 +32,5 @@ public interface MicrophoneInputListener {
    * is 8000 samples per second, then the array should contain 160 16 bit
    * samples.
    */
-  public void processAudioFrame(short[] audioFrame);
+  void processAudioFrame(short[] audioFrame);
 }

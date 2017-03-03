@@ -2,7 +2,6 @@ package me.leedavison.backgroundtrial;
 
 
 import android.app.AlertDialog;
-
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.DialogInterface;
@@ -15,9 +14,9 @@ import android.support.v7.widget.Toolbar;
 import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -293,10 +292,7 @@ public class MainActivity extends AppCompatActivity {
 
         SharedPreferences prefs = this.getSharedPreferences(
                 "me.leedavison.backgroundtrial", Context.MODE_PRIVATE);
-        if (prefs.contains(DATA_KEY_NAME)) {
-            return true;
-        }
-        return false;
+        return prefs.contains(DATA_KEY_NAME);
     }
 
 
