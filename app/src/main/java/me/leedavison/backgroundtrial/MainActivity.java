@@ -12,7 +12,6 @@ import android.support.design.internal.NavigationMenu;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.InputType;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -263,25 +262,26 @@ public class MainActivity extends AppCompatActivity {
         ContextWrapper c = new ContextWrapper(getApplicationContext());
 
 
-        BackgroundMail.newBuilder(getApplicationContext())
+        BackgroundMail.newBuilder(this)
                 .withUsername("SolentHearingHealth@gmail.com")
                 .withPassword("anechoic3745")
                 .withMailto("lee.davison@solent.ac.uk")
                 .withSubject("Data submission from " + userName)
                 .withBody(feedback)
                 .withAttachments(c.getFilesDir() + "/Headphone_Log.csv")
+                .withProcessVisibility(true)
                 .withOnSuccessCallback(new BackgroundMail.OnSuccessCallback() {
                     @Override
                     public void onSuccess() {
-                        Log.e("Email status: ", "worked");
-                        Toast.makeText(MainActivity.this, "email sent!", Toast.LENGTH_SHORT).show();
+//                        Log.e("Email status: ", "worked");
+//                        Toast.makeText(MainActivity.this, "email sent!", Toast.LENGTH_SHORT).show();
                     }
                 })
                 .withOnFailCallback(new BackgroundMail.OnFailCallback() {
                     @Override
                     public void onFail() {
-                        Log.e("Email status: ", "worked");
-                        Toast.makeText(MainActivity.this, "Email failed.", Toast.LENGTH_SHORT).show();
+//                        Log.e("Email status: ", "worked");
+//                        Toast.makeText(MainActivity.this, "Email failed.", Toast.LENGTH_SHORT).show();
                     }
                 })
                 .send();
