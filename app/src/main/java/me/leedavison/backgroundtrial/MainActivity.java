@@ -1,40 +1,21 @@
 package me.leedavison.backgroundtrial;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.annotation.TargetApi;
-import android.app.Activity;
+
 import android.app.AlertDialog;
-import android.app.Application;
-import android.app.Notification;
-import android.app.NotificationManager;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
-import android.media.AudioManager;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.design.internal.NavigationMenu;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.InputType;
-import android.util.Log;
-import android.view.ContextThemeWrapper;
-import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.ViewAnimationUtils;
-import android.view.ViewGroup;
-import android.widget.Button;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -42,15 +23,11 @@ import android.widget.Toast;
 
 import com.creativityapps.gmailbackgroundlibrary.BackgroundMail;
 
-import java.io.File;
 import java.io.FileOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.StringTokenizer;
+import java.util.Locale;
 
-import javax.mail.MessagingException;
-
-import au.com.bytecode.opencsv.CSV;
 import io.github.yavski.fabspeeddial.FabSpeedDial;
 import io.github.yavski.fabspeeddial.SimpleMenuListenerAdapter;
 
@@ -62,8 +39,8 @@ public class MainActivity extends AppCompatActivity {
     private static final String DATA_KEY_SCHOOL = "school";
     public static boolean isService = false;
     public static Context appContext;
-    public boolean firstStart = true;
-    public boolean trackMusic = true;
+    public boolean trackMusic = false;
+    boolean firstBoot;
     String feedbackText = "No feedback!";
     String userName;
     String userEmail;
@@ -92,17 +69,19 @@ public class MainActivity extends AppCompatActivity {
         userAge = prefs.getString(DATA_KEY_AGE, null);
         userSchool = prefs.getString(DATA_KEY_SCHOOL, null);
 
-        Toast.makeText(MainActivity.this, userName + userEmail + userAge + userSchool, Toast.LENGTH_SHORT).show();
-
 
         userShortName = userName != null ? userName.split(" ") : new String[0];
 
 
         if (!userDetailsExist()) {
+            trackMusic = false;
+            firstBoot = true;
             Intent myIntent = new Intent(MainActivity.this, questionnaire.class);
             MainActivity.this.startActivity(myIntent);
+        } else {
+            trackMusic = true;
+            firstBoot = false;
         }
-
 
         welcomeText = (TextView) findViewById(R.id.welcome_message);
 
@@ -144,10 +123,9 @@ public class MainActivity extends AppCompatActivity {
         }
 
 
-
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        if (getSupportActionBar() != null) getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setIcon(R.drawable.headphonesicon2);
 
 
@@ -156,7 +134,7 @@ public class MainActivity extends AppCompatActivity {
             fabSpeedDial.setMenuListener(new SimpleMenuListenerAdapter() {
                 @Override
                 public boolean onPrepareMenu(NavigationMenu navigationMenu) {
-                    // TODO: Do something with yout menu items, or return false if you don't want to show them
+                    // TODO: Do something with your menu items, or return false if you don't want to show them
                     return true;
 
                 }
@@ -182,21 +160,21 @@ public class MainActivity extends AppCompatActivity {
                             final EditText edittext = (EditText) v.findViewById(R.id.alert_dialog_edit_text);
 
                             alert.setPositiveButton("Send Feedback", new DialogInterface.OnClickListener() {
-                                                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            if (edittext != null) {
-                                                feedbackText = edittext.getText().toString();
-                                            }
-                                            sendEmail(feedbackText);
-                                            feedbackText = "No feedback!";
-                                        }
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    if (edittext != null) {
+                                        feedbackText = edittext.getText().toString();
+                                    }
+                                    sendEmail(feedbackText);
+                                    feedbackText = "No feedback!";
+                                }
                             }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
 
                                 }
                             }).show();
-                                return true;
+                            return true;
 
 
                         case R.id.action_delete:
@@ -208,7 +186,7 @@ public class MainActivity extends AppCompatActivity {
 
                             AlertDialog.Builder fileDeleteDialog = new AlertDialog.Builder(MainActivity.this);
                             fileDeleteDialog.setView(passwordText)
-                                    .setMessage("This will delete the log so far... Are you sure you want to do that? \\n What's the password?")
+                                    .setMessage("This will delete the log so far... Are you sure you want to do that? \n What's the password?")
                                     .setTitle("Whoah there...")
                                     .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
                                         @Override
@@ -235,25 +213,28 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-
     @Override
     protected void onPause() {
         super.onPause();
 
-        if (trackMusic){
+        if (trackMusic && !firstBoot) {
             startService(new Intent(MainActivity.this, BackgroundService.class));
             Intent startMain = new Intent(Intent.ACTION_MAIN);
             startMain.addCategory(Intent.CATEGORY_HOME);
             startMain.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(startMain);
-        }else{
-            Toast.makeText(MainActivity.this, "Music is not being tracked!", Toast.LENGTH_SHORT).show();
+        } else if (!firstBoot) {
+            Toast.makeText(MainActivity.this, "Music is not being tracked.", Toast.LENGTH_SHORT).show();
         }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+
+        if (userDetailsExist()) {
+            trackMusic = true;
+        }
 
         welcomeText.setText("Hi, " + userShortName[0] + "!");
 
@@ -265,6 +246,15 @@ public class MainActivity extends AppCompatActivity {
             tv.setText("Resume tracking");
             isService = false;
         }
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+
+        if (userDetailsExist()) {
+            trackMusic = true;
+        }
 
     }
 
@@ -273,24 +263,25 @@ public class MainActivity extends AppCompatActivity {
         ContextWrapper c = new ContextWrapper(getApplicationContext());
 
 
-        BackgroundMail.newBuilder(getApplicationContext())
+        BackgroundMail.newBuilder(this)
                 .withUsername("SolentHearingHealth@gmail.com")
                 .withPassword("anechoic3745")
                 .withMailto("lee.davison@solent.ac.uk")
-                .withSubject("Data submission from XXX")
+                .withSubject("Data submission from " + userName)
                 .withBody(feedback)
                 .withAttachments(c.getFilesDir() + "/Headphone_Log.csv")
+                .withProcessVisibility(true)
                 .withOnSuccessCallback(new BackgroundMail.OnSuccessCallback() {
                     @Override
                     public void onSuccess() {
-                        Log.e("Email status: ", "worked");
+//                        Log.e("Email status: ", "worked");
 //                        Toast.makeText(MainActivity.this, "email sent!", Toast.LENGTH_SHORT).show();
                     }
                 })
                 .withOnFailCallback(new BackgroundMail.OnFailCallback() {
                     @Override
                     public void onFail() {
-                        Log.e("Email status: ", "worked");
+//                        Log.e("Email status: ", "worked");
 //                        Toast.makeText(MainActivity.this, "Email failed.", Toast.LENGTH_SHORT).show();
                     }
                 })
@@ -302,17 +293,15 @@ public class MainActivity extends AppCompatActivity {
 
         SharedPreferences prefs = this.getSharedPreferences(
                 "me.leedavison.backgroundtrial", Context.MODE_PRIVATE);
-        if (prefs.contains(DATA_KEY_NAME)) {
-            return true;
-        }
-        return false;
+        return prefs.contains(DATA_KEY_NAME);
     }
 
 
     public void resetFile() {
+        //ToDo: Check this to make sure it works!
 
         String fileName = "Headphone_Log.csv";
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss", Locale.ENGLISH);
         String time = sdf.format(new Date());
         String entry = "Time , Volume level" + "\n" + time + " , Start of log " + "\n";
 
@@ -323,6 +312,7 @@ public class MainActivity extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        Toast.makeText(MainActivity.this, "CSV data file deleted", Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -341,6 +331,8 @@ public class MainActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            Intent intent = new Intent(this, LevelMeterActivity.class);
+            startActivity(intent);
             return true;
         }
 
