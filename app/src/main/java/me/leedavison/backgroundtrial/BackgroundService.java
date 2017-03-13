@@ -1,5 +1,6 @@
 package me.leedavison.backgroundtrial;
 
+import android.annotation.TargetApi;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -16,6 +17,7 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.provider.MediaStore;
 import android.service.notification.NotificationListenerService;
+import android.support.v4.app.NotificationManagerCompat;
 import android.support.v4.media.session.MediaControllerCompat;
 import android.util.Log;
 
@@ -71,7 +73,15 @@ public class BackgroundService extends Service {
         //Setup the scheduled task
         scheduler.scheduleAtFixedRate(new Runnable() {
             @Override
+
             public void run() {
+
+                if ((Integer.valueOf(android.os.Build.VERSION.SDK))>23) {
+//                    NotificationManagerCompat.
+
+//                            mNM.getActiveNotifications();
+
+                }
 
                 if (manager.isMusicActive() && (manager.isWiredHeadsetOn() || manager.isBluetoothA2dpOn())) {
                     if (manager.isBluetoothA2dpOn()) Log.i("Bluetooth Audio: ", "on");
