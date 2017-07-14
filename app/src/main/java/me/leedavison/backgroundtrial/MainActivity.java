@@ -31,6 +31,8 @@ import java.util.Locale;
 import io.github.yavski.fabspeeddial.FabSpeedDial;
 import io.github.yavski.fabspeeddial.SimpleMenuListenerAdapter;
 
+//import com.creativityapps.gmailbackgroundlibrary.BackgroundMail;
+
 public class MainActivity extends AppCompatActivity {
 
     private static final String DATA_KEY_NAME = "name";
@@ -49,6 +51,8 @@ public class MainActivity extends AppCompatActivity {
     TextView welcomeText;
     String userShortName[];
 
+    Intent serviceIntent;
+
     public static Context getContext() {
         return appContext;
     }
@@ -60,6 +64,8 @@ public class MainActivity extends AppCompatActivity {
 
 
         appContext = getApplicationContext();
+
+        serviceIntent = new Intent(MainActivity.this, BackgroundService.class);
 
         SharedPreferences prefs = this.getSharedPreferences(
                 "me.leedavison.backgroundtrial", Context.MODE_PRIVATE);
@@ -98,7 +104,9 @@ public class MainActivity extends AppCompatActivity {
             startserviceButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    startService(new Intent(MainActivity.this, BackgroundService.class));
+
+                    startService(serviceIntent);
+
                     Intent startMain = new Intent(Intent.ACTION_MAIN);
                     startMain.addCategory(Intent.CATEGORY_HOME);
                     startMain.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -112,12 +120,15 @@ public class MainActivity extends AppCompatActivity {
             stopserviceButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    trackMusic = false;
 
-                    Intent startMain = new Intent(Intent.ACTION_MAIN);
-                    startMain.addCategory(Intent.CATEGORY_HOME);
-                    startMain.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    startActivity(startMain);
+                    trackMusic = false;
+                    stopService(serviceIntent);
+
+//                    Intent startMain = new Intent(Intent.ACTION_MAIN);
+//                    startMain.addCategory(Intent.CATEGORY_HOME);
+//                    startMain.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//                    startActivity(startMain);
+
                 }
             });
         }
@@ -213,20 +224,29 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+
     @Override
     protected void onPause() {
         super.onPause();
+        startService(new Intent(MainActivity.this, BackgroundService.class));
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
 
         if (trackMusic && !firstBoot) {
             startService(new Intent(MainActivity.this, BackgroundService.class));
-            Intent startMain = new Intent(Intent.ACTION_MAIN);
-            startMain.addCategory(Intent.CATEGORY_HOME);
-            startMain.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(startMain);
+//            Intent startMain = new Intent(Intent.ACTION_MAIN);
+//            startMain.addCategory(Intent.CATEGORY_HOME);
+//            startMain.setFlags(Intent.FLAG_FROM_BACKGROUND);
+//            startActivity(startMain);
         } else if (!firstBoot) {
+            stopService(serviceIntent);
             Toast.makeText(MainActivity.this, "Music is not being tracked.", Toast.LENGTH_SHORT).show();
         }
     }
+
 
     @Override
     protected void onResume() {
@@ -238,8 +258,8 @@ public class MainActivity extends AppCompatActivity {
 
         welcomeText.setText("Hi, " + userShortName[0] + "!");
 
-        stopService(new Intent(MainActivity.this,
-                BackgroundService.class));
+        stopService(serviceIntent);
+
         if (isService) {
             TextView tv = (TextView) findViewById(R.id.textView1);
             assert tv != null;
@@ -258,15 +278,15 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+
     private void sendEmail(String feedback) {
 
         ContextWrapper c = new ContextWrapper(getApplicationContext());
 
-
         BackgroundMail.newBuilder(this)
                 .withUsername("SolentHearingHealth@gmail.com")
                 .withPassword("anechoic3745")
-                .withMailto("lee.davison@solent.ac.uk")
+                .withMailTo("lee.davison@solent.ac.uk")
                 .withSubject("Data submission from " + userName)
                 .withBody(feedback)
                 .withAttachments(c.getFilesDir() + "/Headphone_Log.csv")
@@ -332,6 +352,11 @@ public class MainActivity extends AppCompatActivity {
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             Intent intent = new Intent(this, LevelMeterActivity.class);
+            startActivity(intent);
+            return true;
+        } else if (id == R.id.findAppTest) {
+
+            Intent intent = new Intent(this, findAppTest.class);
             startActivity(intent);
             return true;
         }

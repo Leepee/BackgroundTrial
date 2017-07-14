@@ -1,51 +1,33 @@
 package me.leedavison.backgroundtrial;
 
-import android.annotation.TargetApi;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
-import android.media.session.MediaController;
-import android.media.session.MediaSessionManager;
 import android.os.Binder;
-import android.os.Build;
-import android.os.Bundle;
 import android.os.IBinder;
-import android.provider.MediaStore;
-import android.service.notification.NotificationListenerService;
-import android.support.v4.app.NotificationManagerCompat;
-import android.support.v4.media.session.MediaControllerCompat;
 import android.util.Log;
 
 import java.io.FileOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 
 public class BackgroundService extends Service {
-    private NotificationManager mNM;
     private final IBinder mBinder = new LocalBinder();
-    private String newtext;
     int volumeLevel;
     int savedLevel;
     AudioManager manager;
     boolean isSaving;
     String state;
-
-
-    public class LocalBinder extends Binder {
-        BackgroundService getService() {
-            return BackgroundService.this;
-        }
-    }
+    private NotificationManager mNM;
+    private String newtext;
 
     @Override
     public void onCreate() {
@@ -82,12 +64,11 @@ public class BackgroundService extends Service {
 //                            mNM.getActiveNotifications();
 
                 }
-
+// Deprecation in the following method is ok - it is a purpose change.
                 if (manager.isMusicActive() && (manager.isWiredHeadsetOn() || manager.isBluetoothA2dpOn())) {
                     if (manager.isBluetoothA2dpOn()) Log.i("Bluetooth Audio: ", "on");
 
                     volumeLevel = manager.getStreamVolume(AudioManager.STREAM_MUSIC);
-
                     if (!isSaving) {
                         state = "Audio started";
                         saveResult(volumeLevel, state);
@@ -177,6 +158,12 @@ public class BackgroundService extends Service {
     @Override
     public IBinder onBind(Intent intent) {
         return mBinder;
+    }
+
+    public class LocalBinder extends Binder {
+        BackgroundService getService() {
+            return BackgroundService.this;
+        }
     }
 }
 

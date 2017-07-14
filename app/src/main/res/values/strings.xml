@@ -40,10 +40,8 @@
         <item>8000</item>
         <item>16000</item>
     </string-array>
-
-
-
-
+    <string name="title_activity_find_app_test">findAppTest</string>
+    <string name="title_activity_polly_test">PollyTest</string>
 
 
 </resources>

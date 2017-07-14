@@ -3,13 +3,13 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:gravity="center_horizontal"
-    android:orientation="vertical" >
-    
+    android:orientation="vertical">
+
     <LinearLayout
         android:id="@+id/linearLayout2"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >  
-        
+        android:layout_height="wrap_content">
+
         <TextView
             android:id="@+id/dBTextView"
             android:layout_width="107dp"
@@ -52,12 +52,36 @@
 
     </LinearLayout>
 
-    <ToggleButton
-        android:id="@+id/on_off_toggle_button"
-        android:layout_width="100dp"
+    <LinearLayout
+        android:id="@+id/LinearLayout4"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:text="On" />
+        android:layout_weight="0.25"
+        android:orientation="horizontal">
+
+        <ToggleButton
+            android:id="@+id/on_off_toggle_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="On" />
+
+        <ToggleButton
+            android:id="@+id/signal_source_toggle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="On" />
+
+        <Button
+            android:id="@+id/calibrate_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_weight="1"
+            android:text="Cal" />
+
+    </LinearLayout>
 
     <TextView
         android:id="@+id/textView2"
@@ -128,9 +152,10 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:text="Settings" />
-        
-    <view class="me.leedavison.backgroundtrial.BarLevelDrawable"
+
+    <view
         android:id="@+id/bar_level_drawable_view"
+        class="me.leedavison.backgroundtrial.BarLevelDrawable"
         android:layout_width="fill_parent"
         android:layout_height="48dp" ></view> 
     
