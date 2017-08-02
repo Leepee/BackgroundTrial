@@ -15,14 +15,22 @@
 package me.leedavison.backgroundtrial;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
 import android.media.MediaRecorder;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
@@ -40,6 +48,17 @@ public class LevelMeterActivity extends Activity implements
     TextView mdBFractionTextView;
     BarLevelDrawable mBarLevel;
     String[] perms = {"android.permission.RECORD_AUDIO"};
+    SharedPreferences prefs;
+    String offsetKey = "OFFSET_VALUE_KEY";
+    String profileKey = "PROFILE_KEY_LEVEL_";
+    DecimalFormat df = new DecimalFormat("##.# dB");
+
+    Float dBLevel = 0f;
+    AudioManager am;
+
+
+    MediaPlayer signalPlayer;
+
 
     double mOffsetdB = 10;  // Offset for bar, i.e. 0 lit LEDs at 10 dB.
     // The Google ASR input requirements state that audio input sensitivity
@@ -57,12 +76,17 @@ public class LevelMeterActivity extends Activity implements
     private volatile boolean mDrawing;
     private volatile int mDrawingCollided;
 
-    /**
-     * Called when the activity is first created.
-     */
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+
+        prefs = this.getSharedPreferences(getPackageName(), MODE_PRIVATE);
+
+        signalPlayer = MediaPlayer.create(getApplicationContext(), getResources().getIdentifier("fpn", "raw", getPackageName()));
+        signalPlayer.setLooping(true);
 
         // Here the micInput object is created for audio capture.
         // It is set up to call this object to handle real time audio frames of
@@ -80,6 +104,14 @@ public class LevelMeterActivity extends Activity implements
         mdBFractionTextView = (TextView) findViewById(R.id.dBFractionTextView);
         mGainTextView = (TextView) findViewById(R.id.gain);
 
+
+        //If the calibration offset exists, set it as the
+        if (prefs.contains(offsetKey)) {
+            mDifferenceFromNominal = prefs.getFloat(offsetKey, 0);
+            mGainTextView.setText(df.format(mDifferenceFromNominal));
+        }
+
+
         // Toggle Button handler.
 
         final ToggleButton onOffButton = (ToggleButton) findViewById(
@@ -88,8 +120,65 @@ public class LevelMeterActivity extends Activity implements
                 R.id.signal_source_toggle);
         final Button calibrateButton = (Button) findViewById(
                 R.id.calibrate_button);
+        final Button profileButton = (Button) findViewById(
+                R.id.profile_button);
+
+        profileButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(LevelMeterActivity.this);
+                builder.setMessage("The device will now be profiled. Ensure the headphones are on the fixture")
+                        .setCancelable(false)
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                new MyTask(LevelMeterActivity.this).execute();
+                            }
+                        });
+                AlertDialog alert = builder.create();
+                alert.show();
+
+            }
+        });
+
+        calibrateButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                prefs.edit().putFloat(offsetKey, (float) mDifferenceFromNominal).commit();
+
+                Log.i("offset is stored as: ", String.valueOf(prefs.getFloat(offsetKey, 0)));
+            }
+        });
 
 
+        CompoundButton.OnCheckedChangeListener changeChecker = new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                switch (buttonView.getId()) {
+                    case R.id.on_off_toggle_button:
+                        if (onOffButton.isChecked()) {
+                            readPreferences();
+                            micInput.setSampleRate(mSampleRate);
+                            micInput.setAudioSource(mAudioSource);
+                            micInput.start();
+                        } else {
+                            micInput.stop();
+                        }
+
+                    case R.id.signal_source_toggle:
+                        if (signalOnOffButton.isChecked()) {
+                            signalPlayer.start();
+                        } else {
+                            if (signalPlayer.getCurrentPosition() > 1)
+                                signalPlayer.pause();
+                            signalPlayer.seekTo(0);
+                        }
+                }
+            }
+        };
+
+        onOffButton.setOnCheckedChangeListener(changeChecker);
+        signalOnOffButton.setOnCheckedChangeListener(changeChecker);
         // Sort out perms
 
         if (Build.VERSION.SDK_INT >= 23) {
@@ -100,21 +189,46 @@ public class LevelMeterActivity extends Activity implements
             }
         }
 
-        ToggleButton.OnClickListener tbListener =
-                new ToggleButton.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if (onOffButton.isChecked()) {
-                            readPreferences();
-                            micInput.setSampleRate(mSampleRate);
-                            micInput.setAudioSource(mAudioSource);
-                            micInput.start();
-                        } else {
-                            micInput.stop();
-                        }
-                    }
-                };
-        onOffButton.setOnClickListener(tbListener);
+//        ToggleButton.OnClickListener tbListener =
+//                new ToggleButton.OnClickListener() {
+//                    @Override
+//                    public void onClick(View v) {
+//                        if (onOffButton.isChecked()) {
+//                            readPreferences();
+//                            micInput.setSampleRate(mSampleRate);
+//                            micInput.setAudioSource(mAudioSource);
+//                            micInput.start();
+//                        } else {
+//                            micInput.stop();
+//                        }
+//                    }
+//                };
+//        onOffButton.setOnClickListener(tbListener);
+
+//        ToggleButton.OnClickListener signalTBListener =
+//                new ToggleButton.OnClickListener() {
+//                    @Override
+//                    public void onClick(View v) {
+//                        if (signalOnOffButton.isChecked()) {
+//
+////                            try {
+////                                signalPlayer.prepare();
+////                            } catch (IOException e) {
+////                                e.printStackTrace();
+////                            }
+//                            signalPlayer.start();
+//
+//
+////                            readPreferences();
+////                            micInput.setSampleRate(mSampleRate);
+////                            micInput.setAudioSource(mAudioSource);
+////                            micInput.start();
+//                        } else {
+//                            signalPlayer.stop();
+//                        }
+//                    }
+//                };
+//        onOffButton.setOnClickListener(signalTBListener);
 
         // Level adjustment buttons.
 
@@ -127,6 +241,16 @@ public class LevelMeterActivity extends Activity implements
         Button minus1dbButton = (Button) findViewById(R.id.minus_1_db_button);
         DbClickListener minus1dBButtonListener = new DbClickListener(-1.0);
         minus1dbButton.setOnClickListener(minus1dBButtonListener);
+
+        // Minus 0.1 dB button event handler.
+        Button minuspoint1dbButton = (Button) findViewById(R.id.minus_point1_db_button);
+        DbClickListener minuspoint1dBButtonListener = new DbClickListener(-0.1);
+        minuspoint1dbButton.setOnClickListener(minuspoint1dBButtonListener);
+
+        // Plus 0.1 dB button event handler.
+        Button pluspoint1dbButton = (Button) findViewById(R.id.plus_point1_db_button);
+        DbClickListener pluspoint1dBButtonListener = new DbClickListener(0.1);
+        pluspoint1dbButton.setOnClickListener(pluspoint1dBButtonListener);
 
         // Plus 1 dB button event handler.
         Button plus1dbButton = (Button) findViewById(R.id.plus_1_db_button);
@@ -206,6 +330,15 @@ public class LevelMeterActivity extends Activity implements
                     DecimalFormat df_fraction = new DecimalFormat("#");
                     int one_decimal = (int) (Math.round(Math.abs(rmsdB * 10))) % 10;
                     mdBFractionTextView.setText(Integer.toString(one_decimal));
+
+//                    dBLevel = Float.parseFloat((df.format(20 + rmsdB) + "." + one_decimal ));
+                    dBLevel = Float.parseFloat(String.valueOf((df.format(20 + rmsdB)) + "." + String.valueOf(one_decimal)));
+                    Log.i("Spl: ", String.valueOf(dBLevel));
+
+
+
+
+
                     mDrawing = false;
                 }
             });
@@ -230,8 +363,78 @@ public class LevelMeterActivity extends Activity implements
         public void onClick(View v) {
             LevelMeterActivity.this.mGain *= Math.pow(10, gainIncrement / 20.0);
             mDifferenceFromNominal -= gainIncrement;
-            DecimalFormat df = new DecimalFormat("##.# dB");
             mGainTextView.setText(df.format(mDifferenceFromNominal));
         }
     }
+
+    public class MyTask extends AsyncTask<Void, Void, Void> {
+
+
+        ProgressDialog pd;
+        private Context mContext;
+
+        public MyTask(Context context) {
+            mContext = context;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pd = new ProgressDialog(LevelMeterActivity.this);
+            pd.setMessage("One moment, profiling device volume levels!");
+            pd.show();
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+
+            for (int i = am.getStreamMaxVolume(AudioManager.STREAM_MUSIC); i > 0; i--) {
+
+                am.setStreamVolume(AudioManager.STREAM_MUSIC, i, 0);
+                Log.i("Volume is ", String.valueOf(am.getStreamVolume(AudioManager.STREAM_MUSIC)));
+                signalPlayer.start();
+
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                signalPlayer.pause();
+
+                prefs.edit().putFloat(profileKey + String.valueOf(i), 0).apply();
+            }
+
+            //set volume to max
+
+
+            //Set volume 1 notch below
+
+
+//
+//            am.setStreamVolume(AudioManager.STREAM_MUSIC, am.getStreamMaxVolume(AudioManager.STREAM_MUSIC), 0);
+//            signalPlayer.start();
+//
+//            try {
+//                Thread.sleep(2000);
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
+//            signalPlayer.pause();
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void result) {
+            super.onPostExecute(result);
+            if (pd != null) {
+                pd.dismiss();
+            }
+        }
+    }
+
+
 }
+
+
+

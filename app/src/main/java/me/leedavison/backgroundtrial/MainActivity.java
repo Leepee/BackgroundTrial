@@ -1,6 +1,5 @@
 package me.leedavison.backgroundtrial;
 
-
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.ContextWrapper;
@@ -12,6 +11,7 @@ import android.support.design.internal.NavigationMenu;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.InputType;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -31,8 +31,6 @@ import java.util.Locale;
 import io.github.yavski.fabspeeddial.FabSpeedDial;
 import io.github.yavski.fabspeeddial.SimpleMenuListenerAdapter;
 
-//import com.creativityapps.gmailbackgroundlibrary.BackgroundMail;
-
 public class MainActivity extends AppCompatActivity {
 
     private static final String DATA_KEY_NAME = "name";
@@ -41,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String DATA_KEY_SCHOOL = "school";
     public static boolean isService = false;
     public static Context appContext;
-    public boolean trackMusic = false;
+    public static boolean trackMusic = false;
     boolean firstBoot;
     String feedbackText = "No feedback!";
     String userName;
@@ -122,12 +120,12 @@ public class MainActivity extends AppCompatActivity {
                 public void onClick(View v) {
 
                     trackMusic = false;
-                    stopService(serviceIntent);
+                    Log.i("Trackmusic set: ", "False");
 
-//                    Intent startMain = new Intent(Intent.ACTION_MAIN);
-//                    startMain.addCategory(Intent.CATEGORY_HOME);
-//                    startMain.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//                    startActivity(startMain);
+                    Intent startMain = new Intent(Intent.ACTION_MAIN);
+                    startMain.addCategory(Intent.CATEGORY_HOME);
+                    startMain.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(startMain);
 
                 }
             });
@@ -234,13 +232,11 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-
+//When back is pressed, if trackmusic is on, enable the background service.
         if (trackMusic && !firstBoot) {
             startService(new Intent(MainActivity.this, BackgroundService.class));
-//            Intent startMain = new Intent(Intent.ACTION_MAIN);
-//            startMain.addCategory(Intent.CATEGORY_HOME);
-//            startMain.setFlags(Intent.FLAG_FROM_BACKGROUND);
-//            startActivity(startMain);
+            Toast.makeText(appContext, "Your music is being tracked", Toast.LENGTH_SHORT).show();
+//If firstboot hasn't been completed, post a toast to warn user.
         } else if (!firstBoot) {
             stopService(serviceIntent);
             Toast.makeText(MainActivity.this, "Music is not being tracked.", Toast.LENGTH_SHORT).show();

@@ -40,7 +40,7 @@ public class BackgroundService extends Service {
         manager = (AudioManager) this.getSystemService(Context.AUDIO_SERVICE);
 
 
-        ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
+        final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
 
         final Notification.Builder musicPlayingNotification = new Notification.Builder(getApplicationContext())
                 .setContentTitle("Thanks for helping my research!")
@@ -58,12 +58,15 @@ public class BackgroundService extends Service {
 
             public void run() {
 
-                if ((Integer.valueOf(android.os.Build.VERSION.SDK))>23) {
-//                    NotificationManagerCompat.
-
-//                            mNM.getActiveNotifications();
+//if the app says not to log, kill all the resources.
+                if (!MainActivity.trackMusic) {
+                    Log.i("BS: ", "killed");
+                    stopSelf();
+                    mNM.cancel(1);
+                    scheduler.shutdown();
 
                 }
+
 // Deprecation in the following method is ok - it is a purpose change.
                 if (manager.isMusicActive() && (manager.isWiredHeadsetOn() || manager.isBluetoothA2dpOn())) {
                     if (manager.isBluetoothA2dpOn()) Log.i("Bluetooth Audio: ", "on");
@@ -90,6 +93,7 @@ public class BackgroundService extends Service {
 
                         isSaving = true;
                         savedLevel = volumeLevel;
+                        Log.i("BS: ", "recording");
                     }
 
                 } else {
@@ -112,6 +116,7 @@ public class BackgroundService extends Service {
 
 
         newtext = "BackGroundApp Service Running";
+        Log.i("BS: ", "Running");
 
     }
 
@@ -148,11 +153,6 @@ public class BackgroundService extends Service {
 
     public int onStartCommand(Intent intent, int flags, int startId) {
         return START_STICKY;
-    }
-
-    public void onDestroy() {
-        mNM.cancel(R.string.local_service_started);
-        stopSelf();
     }
 
     @Override

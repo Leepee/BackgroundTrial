@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:gravity="center_horizontal"
     android:orientation="vertical">
 
@@ -54,37 +54,100 @@
 
     <LinearLayout
         android:id="@+id/LinearLayout4"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="0.25"
+        android:layout_weight="0.13"
+        android:gravity="center_horizontal"
         android:orientation="horizontal">
 
-        <ToggleButton
-            android:id="@+id/on_off_toggle_button"
+        <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:text="On" />
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
-        <ToggleButton
-            android:id="@+id/signal_source_toggle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:text="On" />
+            <ToggleButton
+                android:id="@+id/on_off_toggle_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="On" />
 
-        <Button
-            android:id="@+id/calibrate_button"
+            <TextView
+                android:id="@+id/textViewMic"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Microphone"
+                android:textAlignment="center" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <ToggleButton
+                android:id="@+id/signal_source_toggle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="On" />
+
+            <TextView
+                android:id="@+id/textView3Sig"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Signal"
+                android:textAlignment="center" />
+        </LinearLayout>
+
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:layout_weight="1"
-            android:text="Cal" />
+            android:orientation="vertical">
+
+            <Button
+                android:id="@+id/calibrate_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_weight="1"
+                android:text="Cal"
+                android:textAlignment="center" />
+
+            <TextView
+                android:id="@+id/textViewCal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Calibrate"
+                android:textAlignment="center" />
+        </LinearLayout>
 
     </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <Button
+            android:id="@+id/profile_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Profile" />
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textAlignment="center" />
+    </LinearLayout>
+
     <TextView
-        android:id="@+id/textView2"
+        android:id="@+id/textViewIns"
         android:layout_width="287dp"
         android:layout_height="100dp"
         android:layout_marginTop="5dp"
@@ -94,7 +157,7 @@
         android:id="@+id/linearLayout1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="5dp" >
+        android:layout_marginTop="5dp">
 
         <Button
             android:id="@+id/minus_5_db_button"
@@ -109,6 +172,20 @@
             android:layout_height="wrap_content"
             android:layout_weight="0.10"
             android:text="@string/minus_1_db" />
+
+        <Button
+            android:id="@+id/minus_point1_db_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.10"
+            android:text="@string/minus_0.1_db" />
+
+        <Button
+            android:id="@+id/plus_point1_db_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.10"
+            android:text="@string/plus_0.1_db" />
 
         <Button
             android:id="@+id/plus_1_db_button"
@@ -128,7 +205,7 @@
     <LinearLayout
         android:id="@+id/linearLayout3"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
+        android:layout_height="wrap_content">
 
         <TextView
             android:id="@+id/gain_error_text"
@@ -145,7 +222,7 @@
             android:layout_weight="0.40"
             android:text="@string/gain" />
     </LinearLayout>
-    
+
     <Button
         android:id="@+id/settingsButton"
         android:layout_width="100dp"
@@ -157,6 +234,6 @@
         android:id="@+id/bar_level_drawable_view"
         class="me.leedavison.backgroundtrial.BarLevelDrawable"
         android:layout_width="fill_parent"
-        android:layout_height="48dp" ></view> 
-    
+        android:layout_height="48dp"></view>
+
 </LinearLayout>
