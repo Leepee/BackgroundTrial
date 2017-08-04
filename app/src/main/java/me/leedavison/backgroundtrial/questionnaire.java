@@ -86,10 +86,10 @@ public class questionnaire extends SingleInputFormActivity {
     protected void onFormFinished(Bundle data) {
         //Get the form data
 
-        prefs.edit().putString(DATA_KEY_NAME, TextStep.text(data, DATA_KEY_NAME)).apply();
-        prefs.edit().putString(DATA_KEY_EMAIL, TextStep.text(data, DATA_KEY_EMAIL)).apply();
-        prefs.edit().putString(DATA_KEY_AGE, TextStep.text(data, DATA_KEY_AGE)).apply();
-        prefs.edit().putString(DATA_KEY_SCHOOL, TextStep.text(data, DATA_KEY_SCHOOL)).apply();
+        prefs.edit().putString(DATA_KEY_NAME, TextStep.text(data, DATA_KEY_NAME)).commit();
+        prefs.edit().putString(DATA_KEY_EMAIL, TextStep.text(data, DATA_KEY_EMAIL)).commit();
+        prefs.edit().putString(DATA_KEY_AGE, TextStep.text(data, DATA_KEY_AGE)).commit();
+        prefs.edit().putString(DATA_KEY_SCHOOL, TextStep.text(data, DATA_KEY_SCHOOL)).commit();
 
         initilizeCSV();
 

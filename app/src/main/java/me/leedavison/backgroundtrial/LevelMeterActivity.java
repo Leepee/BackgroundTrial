@@ -35,6 +35,8 @@ import android.widget.TextView;
 import android.widget.ToggleButton;
 
 import java.text.DecimalFormat;
+import java.util.Iterator;
+import java.util.Map;
 
 import static me.leedavison.backgroundtrial.MainActivity.getContext;
 
@@ -333,10 +335,7 @@ public class LevelMeterActivity extends Activity implements
 
 //                    dBLevel = Float.parseFloat((df.format(20 + rmsdB) + "." + one_decimal ));
                     dBLevel = Float.parseFloat(String.valueOf((df.format(20 + rmsdB)) + "." + String.valueOf(one_decimal)));
-                    Log.i("Spl: ", String.valueOf(dBLevel));
-
-
-
+//                    Log.i("Spl: ", String.valueOf(dBLevel));
 
 
                     mDrawing = false;
@@ -391,19 +390,43 @@ public class LevelMeterActivity extends Activity implements
             for (int i = am.getStreamMaxVolume(AudioManager.STREAM_MUSIC); i > 0; i--) {
 
                 am.setStreamVolume(AudioManager.STREAM_MUSIC, i, 0);
-                Log.i("Volume is ", String.valueOf(am.getStreamVolume(AudioManager.STREAM_MUSIC)));
+//                Log.i("Volume is ", String.valueOf(am.getStreamVolume(AudioManager.STREAM_MUSIC)));
                 signalPlayer.start();
 
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(200);
+                    prefs.edit().putFloat(profileKey + String.valueOf(i), dBLevel).apply();
+                    Thread.sleep(200);
+
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
                 signalPlayer.pause();
+                Log.i("Vol " + String.valueOf(i) + " contains: ",String.valueOf(prefs.getFloat(profileKey + String.valueOf(i),0)));
 
-                prefs.edit().putFloat(profileKey + String.valueOf(i), 0).apply();
             }
 
+
+
+
+//            Iterator iterator = prefs.getAll().entrySet().iterator();
+//            while (iterator.hasNext()) {
+//
+//                Map.Entry pair = (Map.Entry) iterator.next();
+//                Log.i("Prefs contains: ", String.valueOf(pair.getValue() + String.valueOf(pair.getValue())));
+//                iterator.remove();
+//            }
+
+
+
+
+//                System.out.println(pair.getKey() + " = " + pair.getValue());
+//                it.remove(); // avoids a ConcurrentModificationExceptionx
+
+
+//            for (int i = prefs.getAll().size(); i>0; i--) {
+//                Log.i("Prefs contains: ", prefs.getAll().get();
+//            }
             //set volume to max
 
 

@@ -6,7 +6,10 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.media.AudioManager;
+import android.media.session.MediaController;
+import android.media.session.MediaSessionManager;
 import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
@@ -14,6 +17,7 @@ import android.util.Log;
 import java.io.FileOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -27,10 +31,12 @@ public class BackgroundService extends Service {
     boolean isSaving;
     String state;
     private NotificationManager mNM;
-    private String newtext;
+    SharedPreferences prefs;
 
     @Override
     public void onCreate() {
+
+        prefs = this.getSharedPreferences(getPackageName(), MODE_PRIVATE);
 
         Intent intent = new Intent(this, MainActivity.class);
 // use System.currentTimeMillis() to have a unique ID for the pending intent
@@ -64,7 +70,6 @@ public class BackgroundService extends Service {
                     stopSelf();
                     mNM.cancel(1);
                     scheduler.shutdown();
-
                 }
 
 // Deprecation in the following method is ok - it is a purpose change.
@@ -115,7 +120,6 @@ public class BackgroundService extends Service {
         }, 0, 10, TimeUnit.SECONDS);
 
 
-        newtext = "BackGroundApp Service Running";
         Log.i("BS: ", "Running");
 
     }
@@ -123,22 +127,29 @@ public class BackgroundService extends Service {
     public void saveResult(int vol, String state) {
 
 
+        //Get the dB value of the volume form the sharedprefs
+        String volDB = String.valueOf(prefs.getFloat("PROFILE_KEY_LEVEL_" + String.valueOf(volumeLevel), 99));
+
+        //Save the state change, time, vol level and dB exposure
         String fileName = "Headphone_Log.csv";
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
         String time = sdf.format(new Date());
-        String entry = state + " , " + time + " , " + vol + "\n";
+        String entry = state + " , " + time + " , " + vol + " , " + volDB + "\n";
+
+
 
 //        String playingApp;
-//
+
 //        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
 //            MediaSessionManager mediaSessionManager = (MediaSessionManager) this.getSystemService(Context.MEDIA_SESSION_SERVICE);
 //            List<MediaController> listController;
 //
-//        listController = mediaSessionManager.getActiveSessions(AudioManager.OnAudioFocusChangeListener);
+//
+//        listController = mediaSessionManager.addOnActiveSessionsChangedListener(new );
 //        MediaController controller = listController.get(0);
 //
 //            playingApp = controller.getPackageName();
-//
+////
 //            entry = time + " , " + vol + " , " + playingApp + "\n";
 //        }
 

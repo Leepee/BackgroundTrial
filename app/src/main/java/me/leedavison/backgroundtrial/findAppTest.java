@@ -11,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.List;
@@ -19,6 +20,8 @@ import static me.leedavison.backgroundtrial.MainActivity.getContext;
 
 public class findAppTest extends AppCompatActivity {
 
+    TextView textView;
+
     String topPackageName = "none";
     String[] perms = {"android.permission.PACKAGE_USAGE_STATS"};
 
@@ -26,9 +29,10 @@ public class findAppTest extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_find_app_test);
+        setContentView(R.layout.find_app_test);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        textView = (TextView) findViewById(R.id.appNameText);
 
 
         if (Build.VERSION.SDK_INT >= 23) {
@@ -53,11 +57,12 @@ public class findAppTest extends AppCompatActivity {
                     if (usageStats.getLastTimeUsed() > lastUsedAppTime) {
                         topPackageName = usageStats.getPackageName();
                         lastUsedAppTime = usageStats.getLastTimeUsed();
+                        textView.setText(topPackageName);
                     }
                 }
             }
         }
-
+        textView.setText(topPackageName);
 
 //        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
 //            UsageStatsManager mUsageStatsManager = (UsageStatsManager)getSystemService(Context.USAGE_STATS_SERVICE);
@@ -78,19 +83,6 @@ public class findAppTest extends AppCompatActivity {
 //        }
 
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-
-                Toast.makeText(getApplicationContext(), "Last app: " + topPackageName, Toast.LENGTH_SHORT).show();
-
-
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
     }
 
 }

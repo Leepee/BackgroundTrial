@@ -106,10 +106,10 @@ public class MicrophoneInput implements Runnable{
       try {
           recorder = new AudioRecord(
                   MediaRecorder.AudioSource.MIC,
-                  16000,
+                  44100,
                   AudioFormat.CHANNEL_IN_MONO,
                   AudioFormat.ENCODING_PCM_16BIT,
-                  AudioRecord.getMinBufferSize(16000, AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT) * 2);
+                  AudioRecord.getMinBufferSize(44100, AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT) * 2);
           recorder.startRecording();
 
       while (mRunning) {      

@@ -7,9 +7,5 @@
         android:orderInCategory="100"
         android:title="Calibrate"
         app:showAsAction="never" />
-    <item
-        android:id="@+id/findAppTest"
-        android:orderInCategory="99"
-        android:title="Find app test" />
 
 </menu>

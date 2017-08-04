@@ -68,14 +68,6 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences prefs = this.getSharedPreferences(
                 "me.leedavison.backgroundtrial", Context.MODE_PRIVATE);
 
-        userName = prefs.getString(DATA_KEY_NAME, "welcome to my music tracker!");
-        userEmail = prefs.getString(DATA_KEY_EMAIL, null);
-        userAge = prefs.getString(DATA_KEY_AGE, null);
-        userSchool = prefs.getString(DATA_KEY_SCHOOL, null);
-
-
-        userShortName = userName != null ? userName.split(" ") : new String[0];
-
 
         if (!userDetailsExist()) {
             trackMusic = false;
@@ -87,8 +79,14 @@ public class MainActivity extends AppCompatActivity {
             firstBoot = false;
         }
 
+        userName = prefs.getString(DATA_KEY_NAME, "welcome to my music tracker!");
+        userEmail = prefs.getString(DATA_KEY_EMAIL, null);
+        userAge = prefs.getString(DATA_KEY_AGE, null);
+        userSchool = prefs.getString(DATA_KEY_SCHOOL, null);
         welcomeText = (TextView) findViewById(R.id.welcome_message);
 
+
+        userShortName = userName != null ? userName.split(" ") : new String[0];
         if (welcomeText != null) {
             welcomeText.setText("Hi, " + userShortName[0] + "!");
         }
@@ -350,12 +348,8 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(this, LevelMeterActivity.class);
             startActivity(intent);
             return true;
-        } else if (id == R.id.findAppTest) {
-
-            Intent intent = new Intent(this, findAppTest.class);
-            startActivity(intent);
-            return true;
         }
+
 
         return super.onOptionsItemSelected(item);
     }
