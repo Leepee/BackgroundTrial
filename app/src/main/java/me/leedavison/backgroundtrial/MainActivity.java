@@ -350,6 +350,12 @@ public class MainActivity extends AppCompatActivity {
             return true;
         }
 
+        if (id == R.id.action_progress) {
+            Intent ProgressIntent = new Intent(this, ProgressActivity.class);
+            startActivity(ProgressIntent);
+            return true;
+        }
+
 
         return super.onOptionsItemSelected(item);
     }

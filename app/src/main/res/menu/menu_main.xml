@@ -7,5 +7,9 @@
         android:orderInCategory="100"
         android:title="Calibrate"
         app:showAsAction="never" />
+    <item android:id="@+id/action_progress"
+        android:orderInCategory="99"
+        android:title="Progress"
+        app:showAsAction="never" />
 
 </menu>
