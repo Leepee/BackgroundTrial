@@ -13,8 +13,8 @@
     <string name="q_email_details">This is so I can get back to you if I need to.</string>
     <string name="q_age">How old are you?</string>
     <string name="q_age_details">I\'m interested to see if there\'s a relationship between age and amount of music listening.</string>
-    <string name="q_school">Which school?</string>
-    <string name="q_school_details">I\'m interested to know if school makes a difference to your listening habits.</string>
+    <string name="q_school">Which course?</string>
+    <string name="q_school_details">I\'m interested to know if course makes a difference to your listening habits.</string>
     <string name="welcome_explaination">When you click \"Start tracking\" (or leave this app) a notification will appear in your notification tray, and your music listenign habits will be tracked. If at any time you want this to stop happening, hit the stop button and the app will exit and stop tracking. For the purposes of my research, it would really help me if you keep the app tracking! Thanks for helping.</string>
     <string name="start_description">Start Tracking button. tap to start the music tracking service.</string>
     <string name="stop_description">Stop tracking button. Tap to stop tracking music service.</string>
