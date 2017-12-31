@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 25
-    buildToolsVersion '25.0.2'
+//    buildToolsVersion '25.0.2'
     defaultConfig {
         applicationId "me.leedavison.backgroundtrial"
         minSdkVersion 19
@@ -22,14 +22,16 @@ android {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile files('libs/opencsv-2.4.jar')
+    //compile files('libs/opencsv-2.4.jar')
     compile 'com.github.luongvo:GmailBackground:2.0.1'
     compile 'io.github.yavski:fab-speed-dial:1.0.6'
-    compile 'com.jakewharton:butterknife:7.0.1'
+//    compile 'com.jakewharton:butterknife:8.8.1'
+//    annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
     compile 'com.github.HeinrichReimer:material-singleinputform:2.1.0'
-    compile 'com.android.support.constraint:constraint-layout:1.0.1'
-    compile 'com.zekapp.library:progreswheelview:1.1.2'
+    compile 'com.android.support.constraint:constraint-layout:1.0.2'
+    compile 'com.github.bmarrdev:android-DecoView-charting:v1.2'
     testCompile 'junit:junit:4.12'
+    compile files('libs/super-csv-2.4.0.jar')
 }
 
 repositories {

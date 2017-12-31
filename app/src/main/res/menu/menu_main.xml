@@ -11,5 +11,10 @@
         android:orderInCategory="99"
         android:title="Progress"
         app:showAsAction="never" />
+    <item
+        android:id="@+id/action_stop_tracking"
+        android:orderInCategory="99"
+        android:title="Stop Logging"
+        app:showAsAction="never" />
 
 </menu>

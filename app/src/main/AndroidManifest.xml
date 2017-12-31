@@ -54,7 +54,7 @@
             android:name=".findAppTest"
             android:label="@string/title_activity_find_app_test"
             android:theme="@style/AppTheme" />
-        <activity android:name=".ProgressActivity"></activity>
+        <activity android:name=".ProgressActivity" />
     </application>
 
 </manifest>

@@ -48,6 +48,7 @@
     </string-array>
     <string name="title_activity_find_app_test">findAppTest</string>
     <string name="title_activity_polly_test">PollyTest</string>
+    <string name="title_activity_main2">Main2Activity</string>
 
 
 </resources>
